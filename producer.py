@@ -2,7 +2,7 @@ import os
 import csv
 from time import sleep
 from typing import Dict
-import socket
+# import socket
 
 from confluent_kafka import Producer
 from confluent_kafka.schema_registry import SchemaRegistryClient
@@ -22,6 +22,8 @@ INPUT_DATA_PATH = os.environ["INPUT_DATA_PATH"]
 RIDE_KEY_SCHEMA_PATH = os.environ["RIDE_KEY_SCHEMA_PATH"]
 RIDE_VALUE_SCHEMA_PATH = os.environ["RIDE_VALUE_SCHEMA_PATH"]
 SCHEMA_REGISTRY_URL = os.environ["SCHEMA_REGISTRY_URL"]
+SCHEMA_REGISTRY_API_KEY = os.environ["SCHEMA_REGISTRY_API_KEY"]
+SCHEMA_REGISTRY_API_SECRET = os.environ["SCHEMA_REGISTRY_API_SECRET"]
 BOOTSTRAP_SERVERS = os.environ["BOOTSTRAP_SERVERS"]
 CLUSTER_API_KEY = os.environ["CLUSTER_API_KEY"]
 CLUSTER_API_SECRET = os.environ["CLUSTER_API_SECRET"]
@@ -41,7 +43,7 @@ class RideAvroProducer:
         # Schema Registry and Serializer-Deserializer Configurations
         key_schema_str = self.load_schema(props['schema.key'])
         value_schema_str = self.load_schema(props['schema.value'])
-        schema_registry_props = {'url': props['schema_registry.url']}
+        schema_registry_props = props['schema_registry_props']
         schema_registry_client = SchemaRegistryClient(schema_registry_props)
         self.key_serializer = AvroSerializer(schema_registry_client, key_schema_str, ride_record_key_to_dict)
         self.value_serializer = AvroSerializer(schema_registry_client, value_schema_str, ride_record_to_dict)
@@ -87,6 +89,7 @@ class RideAvroProducer:
                                                                                               field=MessageField.VALUE)),
                                       on_delivery=delivery_report)
             except KeyboardInterrupt:
+                print(f'Keyboard Interrupt!!')
                 break
             except Exception as e:
                 print(f"Exception while producing record - {value}: {e}")
@@ -97,20 +100,23 @@ class RideAvroProducer:
 
 if __name__ == "__main__":
     config = {
-        'schema_registry.url': SCHEMA_REGISTRY_URL,
+        'schema_registry_props': {'url': SCHEMA_REGISTRY_URL, \
+                  'basic.auth.user.info': f'{SCHEMA_REGISTRY_API_KEY}:{SCHEMA_REGISTRY_API_SECRET}'},
         'schema.key': RIDE_KEY_SCHEMA_PATH,
         'schema.value': RIDE_VALUE_SCHEMA_PATH,
         'producer_props': {
-            'bootstrap.servers': 'pkc-abcd85.us-west-2.aws.confluent.cloud:9092',
+            'bootstrap.servers': BOOTSTRAP_SERVERS,
             'security.protocol': 'SASL_SSL',
             'sasl.mechanism': 'PLAIN',
-            'sasl.username': '<CLUSTER_API_KEY>',
-            'sasl.password': '<CLUSTER_API_SECRET>',
-            'client.id': socket.gethostname()
+            'sasl.username': CLUSTER_API_KEY,
+            'sasl.password': CLUSTER_API_SECRET,
+            # 'client.id': socket.gethostname()
+            'auto.offset.reset': 'earliest'
         }
     }
 
     producer = RideAvroProducer(props=config)
     ride_records = producer.read_records(resource_path=INPUT_DATA_PATH)
+
     producer.publish(topic=KAFKA_TOPIC, records=ride_records)
 
