@@ -110,7 +110,6 @@ if __name__ == "__main__":
             'sasl.mechanism': 'PLAIN',
             'sasl.username': CLUSTER_API_KEY,
             'sasl.password': CLUSTER_API_SECRET,
-            # 'client.id': socket.gethostname()
             'auto.offset.reset': 'earliest'
         }
     }
