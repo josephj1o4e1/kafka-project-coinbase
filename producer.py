@@ -2,7 +2,6 @@ import os
 import csv
 from time import sleep
 from typing import Dict
-# import socket
 
 from confluent_kafka import Producer
 from confluent_kafka.schema_registry import SchemaRegistryClient
@@ -100,18 +99,17 @@ class RideAvroProducer:
 
 if __name__ == "__main__":
     config = {
-        'schema_registry_props': {'url': SCHEMA_REGISTRY_URL, \
-                  'basic.auth.user.info': f'{SCHEMA_REGISTRY_API_KEY}:{SCHEMA_REGISTRY_API_SECRET}'},
-        'schema.key': RIDE_KEY_SCHEMA_PATH,
-        'schema.value': RIDE_VALUE_SCHEMA_PATH,
         'producer_props': {
             'bootstrap.servers': BOOTSTRAP_SERVERS,
             'security.protocol': 'SASL_SSL',
             'sasl.mechanism': 'PLAIN',
             'sasl.username': CLUSTER_API_KEY,
-            'sasl.password': CLUSTER_API_SECRET,
-            'auto.offset.reset': 'earliest'
-        }
+            'sasl.password': CLUSTER_API_SECRET
+        },
+        'schema_registry_props': {'url': SCHEMA_REGISTRY_URL, \
+                  'basic.auth.user.info': f'{SCHEMA_REGISTRY_API_KEY}:{SCHEMA_REGISTRY_API_SECRET}'},
+        'schema.key': RIDE_KEY_SCHEMA_PATH,
+        'schema.value': RIDE_VALUE_SCHEMA_PATH
     }
 
     producer = RideAvroProducer(props=config)
