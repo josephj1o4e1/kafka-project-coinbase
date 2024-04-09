@@ -11,7 +11,6 @@ from confluent_kafka.serialization import SerializationContext, MessageField
 from coinbase_record_key import CoinbaseRecordKey, coinbase_record_key_to_dict
 from coinbase_record import CoinbaseRecord, coinbase_record_to_dict
 
-# from ingest_coinbase_sandbox import CoinbaseSandboxIngestion
 import asyncio, base64, hashlib, hmac, json, os, time, websockets
 
 from dotenv import load_dotenv
@@ -43,6 +42,16 @@ def delivery_report(err, msg):
     print('Record {} successfully produced to {} [{}] at offset {}'.format(
         msg.key(), msg.topic(), msg.partition(), msg.offset()))
 
+async def generate_signature():
+    timestamp = str(time.time())
+    message = f'{timestamp}GET{SIGNATURE_PATH}'
+    hmac_key = base64.b64decode(SANDBOX_SECRET_KEY)
+    signature = hmac.new(
+        hmac_key,
+        message.encode('utf-8'),
+        digestmod=hashlib.sha256).digest()
+    signature_b64 = base64.b64encode(signature).decode().rstrip('\n')
+    return signature_b64, timestamp
 
 class CoinbaseAvroProducer:
     def __init__(self, props: Dict):
@@ -73,19 +82,10 @@ class CoinbaseAvroProducer:
         print('Record {} successfully produced to {} [{}] at offset {}'.format(
             msg.key(), msg.topic(), msg.partition(), msg.offset()))
 
-    async def generate_signature():
-        timestamp = str(time.time())
-        message = f'{timestamp}GET{SIGNATURE_PATH}'
-        hmac_key = base64.b64decode(SANDBOX_SECRET_KEY)
-        signature = hmac.new(
-            hmac_key,
-            message.encode('utf-8'),
-            digestmod=hashlib.sha256).digest()
-        signature_b64 = base64.b64encode(signature).decode().rstrip('\n')
-        return signature_b64, timestamp
+    
     
     async def publish(self, topic: str, channel: str='level2', product_ids: str='BTC-USD'):
-        signature_b64, timestamp = await self.generate_signature()
+        signature_b64, timestamp = await generate_signature()
         subscribe_message = json.dumps({
             'type': 'subscribe',
             'channels': [{'name': channel, 'product_ids': [product_ids]}],

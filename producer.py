@@ -26,7 +26,7 @@ SCHEMA_REGISTRY_API_SECRET = os.environ["SCHEMA_REGISTRY_API_SECRET"]
 BOOTSTRAP_SERVERS = os.environ["BOOTSTRAP_SERVERS"]
 CLUSTER_API_KEY = os.environ["CLUSTER_API_KEY"]
 CLUSTER_API_SECRET = os.environ["CLUSTER_API_SECRET"]
-KAFKA_TOPIC = os.environ["KAFKA_TOPIC"]
+KAFKA_TOPIC = 'rides_avro' #os.environ["KAFKA_TOPIC"]
 
 
 def delivery_report(err, msg):
