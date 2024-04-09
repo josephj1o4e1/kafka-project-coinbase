@@ -99,10 +99,11 @@ class CoinbaseAvroProducer:
             try:
                 async with websockets.connect(URI, ping_interval=None) as websocket:
                     await websocket.send(subscribe_message)
+                    i=0
                     while True:
                         response = await websocket.recv()
                         json_response = json.loads(response)
-                        print(json_response)
+                        print(f'coinbase json resp = {json_response}')
                         if i<2: 
                             # skip first two loops since it returns records with keys=['type', 'channels'] and ['type', 'product_id', 'asks', 'bids', 'time']
                             i+=1
@@ -116,35 +117,15 @@ class CoinbaseAvroProducer:
                                         value=self.value_serializer(value, SerializationContext(topic=topic,
                                                                                                 field=MessageField.VALUE)),
                                         on_delivery=delivery_report)
+                            self.producer.poll(0) # !! timeout=0: triggers the sending of messages from the internal buffer to the Kafka cluster, and serve (won't serve until conditions met. for example, accumulated>=batch.num.messages) any delivery reports from previous produce-calls, or none, without blocking.
                         except Exception as e:
                             print(f"Exception while producing record - {value}: {e}")
 
             except (websockets.exceptions.ConnectionClosedError, websockets.exceptions.ConnectionClosedOK):
                 print('Connection closed, retrying..')
                 await asyncio.sleep(1)
-
-
-
-
-
-
-        for key_value in records:
-            key, value = key_value
-            try:
-                self.producer.produce(topic=topic,
-                                      key=self.key_serializer(key, SerializationContext(topic=topic,
-                                                                                        field=MessageField.KEY)),
-                                      value=self.value_serializer(value, SerializationContext(topic=topic,
-                                                                                              field=MessageField.VALUE)),
-                                      on_delivery=delivery_report)
-            except KeyboardInterrupt:
-                print(f'Keyboard Interrupt!!')
-                break
-            except Exception as e:
-                print(f"Exception while producing record - {value}: {e}")
-
-        self.producer.flush()
-        sleep(1)
+            self.producer.flush()
+            asyncio.sleep(1)
 
 
 if __name__ == "__main__":
@@ -163,9 +144,6 @@ if __name__ == "__main__":
     }
 
     producer = CoinbaseAvroProducer(props=config)
-
-    # coinbase_records = producer.read_records(resource_path=INPUT_DATA_PATH)
-    # producer.publish(topic=KAFKA_TOPIC, records=coinbase_records)
     try:
         asyncio.run(producer.publish(topic=KAFKA_TOPIC, channel='level2', product_ids='BTC-USD'))
     except KeyboardInterrupt:
