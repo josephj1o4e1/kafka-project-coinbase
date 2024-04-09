@@ -1,0 +1,11 @@
+{
+  "namespace": "coinbase.websocket",
+  "type": "record",
+  "name": "CoinbaseRecordKey",
+  "fields": [
+    {
+      "name": "product_id",
+      "type": "string"
+    }
+  ]
+}

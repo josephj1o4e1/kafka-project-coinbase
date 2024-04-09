@@ -2,3 +2,6 @@
 *.txt
 .env
 __pycache__
+*test*.py
+*.json
+/ignored

@@ -1,0 +1,29 @@
+{
+  "namespace": "coinbase.websocket",
+  "type": "record",
+  "name": "CoinbaseRecord",
+  "fields": [
+    {
+      "name": "type",
+      "type": "string"
+    },
+    {
+      "name": "product_id",
+      "type": "string"
+    },
+    {
+      "name": "changes",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "array",
+          "items": "string"
+        }
+      }
+    },
+    {
+      "name": "time",
+      "type": "string"
+    }
+  ]
+}
