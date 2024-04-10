@@ -6,25 +6,25 @@ from confluent_kafka.schema_registry import SchemaRegistryClient
 from confluent_kafka.schema_registry.avro import AvroDeserializer
 from confluent_kafka.serialization import SerializationContext, MessageField
 
-from ride_record_key import dict_to_ride_record_key
-from ride_record import dict_to_ride_record
+from coinbase_record_key import dict_to_coinbase_record_key
+from coinbase_record import dict_to_coinbase_record
 
 from dotenv import load_dotenv
 load_dotenv()
 
 INPUT_DATA_PATH = os.environ["INPUT_DATA_PATH"]
-RIDE_KEY_SCHEMA_PATH = os.environ["RIDE_KEY_SCHEMA_PATH"]
-RIDE_VALUE_SCHEMA_PATH = os.environ["RIDE_VALUE_SCHEMA_PATH"]
+COINBASE_KEY_SCHEMA_PATH = os.environ["COINBASE_KEY_SCHEMA_PATH"]
+COINBASE_VALUE_SCHEMA_PATH = os.environ["COINBASE_VALUE_SCHEMA_PATH"]
 SCHEMA_REGISTRY_URL = os.environ["SCHEMA_REGISTRY_URL"]
 SCHEMA_REGISTRY_API_KEY = os.environ["SCHEMA_REGISTRY_API_KEY"]
 SCHEMA_REGISTRY_API_SECRET = os.environ["SCHEMA_REGISTRY_API_SECRET"]
 BOOTSTRAP_SERVERS = os.environ["BOOTSTRAP_SERVERS"]
 CLUSTER_API_KEY = os.environ["CLUSTER_API_KEY"]
 CLUSTER_API_SECRET = os.environ["CLUSTER_API_SECRET"]
-KAFKA_TOPIC = 'rides_avro' # os.environ["KAFKA_TOPIC"]
+KAFKA_TOPIC = os.environ["KAFKA_TOPIC"]
 
 
-class RideAvroConsumer:
+class CoinbaseAvroConsumer:
     def __init__(self, props: Dict):
 
         # Schema Registry and Serializer-Deserializer Configurations
@@ -34,10 +34,10 @@ class RideAvroConsumer:
         schema_registry_client = SchemaRegistryClient(schema_registry_props)
         self.avro_key_deserializer = AvroDeserializer(schema_registry_client=schema_registry_client,
                                                       schema_str=key_schema_str,
-                                                      from_dict=dict_to_ride_record_key)
+                                                      from_dict=dict_to_coinbase_record_key)
         self.avro_value_deserializer = AvroDeserializer(schema_registry_client=schema_registry_client,
                                                         schema_str=value_schema_str,
-                                                        from_dict=dict_to_ride_record)
+                                                        from_dict=dict_to_coinbase_record)
         consumer_props = props['consumer_props']
         self.consumer = Consumer(consumer_props)
 
@@ -72,7 +72,7 @@ if __name__ == "__main__":
     config = {
         'consumer_props': {
             'bootstrap.servers': BOOTSTRAP_SERVERS,
-            'group.id': 'datatalkclubs.taxirides.avro.consumer',
+            'group.id': 'datatalkclubs.coinbase.avro.consumer',
             'auto.offset.reset': 'earliest',
             'security.protocol': 'SASL_SSL',
             'sasl.mechanism': 'PLAIN',
@@ -81,8 +81,8 @@ if __name__ == "__main__":
         },
         'schema_registry_props': {'url': SCHEMA_REGISTRY_URL, \
                   'basic.auth.user.info': f'{SCHEMA_REGISTRY_API_KEY}:{SCHEMA_REGISTRY_API_SECRET}'},
-        'schema.key': RIDE_KEY_SCHEMA_PATH,
-        'schema.value': RIDE_VALUE_SCHEMA_PATH
+        'schema.key': COINBASE_KEY_SCHEMA_PATH,
+        'schema.value': COINBASE_VALUE_SCHEMA_PATH
     }    
-    avro_consumer = RideAvroConsumer(props=config)
+    avro_consumer = CoinbaseAvroConsumer(props=config)
     avro_consumer.consume_from_kafka(topics=[KAFKA_TOPIC])

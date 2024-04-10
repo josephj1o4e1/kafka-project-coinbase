@@ -109,6 +109,9 @@ class CoinbaseAvroProducer:
                             i+=1
                             continue
                         key = CoinbaseRecordKey(product_id=json_response['product_id']) # keys=['type', 'product_id', 'changes', 'time']
+                        
+                        # for change in json_response['changes']: # unnest array of arrays to separate rows (BigQuery doesn't accept nested arrays for avro files), but using KSQL to unnest might be better. 
+                        #     value = CoinbaseRecord(arr=[json_response['type'], json_response['product_id'], change, json_response['time']])
                         value = CoinbaseRecord(arr=[json_response['type'], json_response['product_id'], json_response['changes'], json_response['time']])
                         try:
                             self.producer.produce(topic=topic,
