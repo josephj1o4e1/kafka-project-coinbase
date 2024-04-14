@@ -18,8 +18,8 @@ SELECT
     type,
     product_id,
     change[1] AS change_side,
-    CAST(change[2] AS DOUBLE) AS change_size,
-    CAST(change[3] AS DOUBLE) AS change_price,
+    CAST(change[2] AS DOUBLE) AS change_price,
+    CAST(change[3] AS DOUBLE) AS change_size,
     time
 FROM
     coinbase_avro_explode

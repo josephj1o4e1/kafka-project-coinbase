@@ -1,7 +1,7 @@
 import os
 import csv
 from time import sleep
-from typing import Dict
+from typing import Dict, List
 
 from confluent_kafka import Producer
 from confluent_kafka.schema_registry import SchemaRegistryClient
@@ -21,7 +21,8 @@ load_dotenv()
 SANDBOX_API_KEY = str(os.environ.get('SANDBOX_API_KEY'))
 SANDBOX_PASSPHRASE = str(os.environ.get('SANDBOX_PASSPHRASE'))
 SANDBOX_SECRET_KEY = str(os.environ.get('SANDBOX_SECRET_KEY'))
-URI = 'wss://ws-feed-public.sandbox.exchange.coinbase.com'
+# URI = 'wss://ws-feed-public.sandbox.exchange.coinbase.com'
+URI = 'wss://ws-direct.sandbox.exchange.coinbase.com'
 SIGNATURE_PATH = '/users/self/verify' # path of the API endpoint.
 COINBASE_KEY_SCHEMA_PATH = os.environ["COINBASE_KEY_SCHEMA_PATH"]
 COINBASE_VALUE_SCHEMA_PATH = os.environ["COINBASE_VALUE_SCHEMA_PATH"]
@@ -33,7 +34,7 @@ BOOTSTRAP_SERVERS = os.environ["BOOTSTRAP_SERVERS"]
 CLUSTER_API_KEY = os.environ["CLUSTER_API_KEY"]
 CLUSTER_API_SECRET = os.environ["CLUSTER_API_SECRET"]
 KAFKA_TOPIC = os.environ["KAFKA_TOPIC"]
-
+# all_product_ids = ['POND-USDC', 'VOXEL-USDC', 'DOT-USDT', 'SYN-USD', 'AXS-USD', 'WBTC-BTC', 'AVAX-USDC', 'AKT-USDC', 'FORTH-USD', 'FLOW-USD', 'ABT-USDC', 'MINA-USDT', 'CELR-USDC', 'TRAC-USDC', 'IDEX-USD', 'ACS-USD', 'BAL-USD', 'SEI-USDC', 'BCH-EUR', 'CRO-USDT', 'ATOM-USDC', 'RNDR-USDT', 'ZRX-USD', 'SWFTC-USD', 'SNX-GBP', 'APE-USD', 'WCFG-USDC', 'CVX-USD', 'MSOL-USDC', 'T-USDC', 'EUROC-EUR', 'GMT-USDC', 'CGLD-GBP', 'XTZ-GBP', 'LSETH-USDC', 'FORT-USD', 'ATOM-BTC', 'RNDR-EUR', 'C98-USD', 'ROSE-USDC', 'BADGER-USD', 'ILV-USDC', 'INV-USDC', 'LOKA-USDC', 'SUKU-USD', 'HOPR-USDC', 'AGLD-USD', 'TRB-USDC', 'LINK-EUR', 'MAGIC-USDC', 'ZETA-USDC', 'LPT-USD', 'SPELL-USD', '1INCH-USDC', 'USDC-EUR', 'CRV-USDC', 'SUPER-USDC', 'SOL-USDC', 'API3-USDC', 'AXS-USDC', 'ATOM-EUR', 'HBAR-USD', 'MATH-USDC', 'COVAL-USDC', 'ALGO-BTC', 'YFI-USDC', 'GAL-USD', 'EOS-USDC', 'CHZ-GBP', 'DNT-USD', 'FET-USDC', 'ABT-USD', 'ALGO-GBP', 'FIS-USD', 'CRV-USD', 'BADGER-USDC', 'OGN-USD', 'VOXEL-USD', 'WAXL-USDC', 'ELA-USDC', 'PNG-USDC', 'PRIME-USDC', 'STX-USDC', 'BOBA-USDC', 'GUSD-USDC', 'USDT-EUR', 'MKR-USDC', 'ADA-ETH', 'AAVE-GBP', 'UMA-USD', 'GTC-USD', 'TIA-USDC', 'LTC-USDC', 'MASK-USDT', 'MAGIC-USD', 'ILV-USD', 'INJ-USD', 'XCN-USD', 'PLU-USDC', 'LQTY-USDC', 'CRV-EUR', 'SHPING-USDC', 'SHIB-GBP', 'ANKR-GBP', 'UNI-GBP', 'LOKA-USD', 'DNT-USDC', 'HFT-USD', 'LIT-USDC', 'QNT-USDT', 'AMP-USDC', 'POLS-USDC', 'BIT-USDC', 'MATIC-USDC', 'HIGH-USDC', 'TNSR-USD', 'BLZ-USDC', 'AXS-USDT', 'KSM-USD', 'BAND-USDC', 'SEAM-USDC', 'HOPR-USD', 'DOGE-EUR', 'BCH-USD', 'OXT-USDC', 'ETH-EUR', 'PYUSD-USD', 'CRO-USD', 'LIT-USD', 'CHZ-USD', 'ARKM-USDC', 'CTX-USDC', 'JASMY-USDT', 'ATOM-GBP', 'PRQ-USDC', 'OGN-USDC', 'FARM-USD', 'AAVE-BTC', 'USDT-USD', 'GYEN-USDC', 'AUCTION-USDC', 'RONIN-USDC', 'SYN-USDC', 'YFI-BTC', 'XYO-USD', 'GODS-USDC', 'DEXT-USDC', 'KRL-USD', 'OXT-USD', 'SPA-USD', 'NMR-USD', 'AUDIO-USDC', 'APT-USDT', 'EGLD-USD', 'EGLD-USDC', 'PRO-USD', 'PERP-USD', 'MLN-USDC', 'QI-USDC', 'BAT-USD', 'FORT-USDC', 'ENS-EUR', 'ICP-EUR', 'XTZ-USDC', 'STORJ-USD', 'DIMO-USD', 'BCH-USDC', 'PYR-USD', 'WAMPL-USD', 'RARI-USD', 'DAI-USDC', 'XRP-USDC', 'NEAR-USDC', 'DOGE-GBP', 'DOGE-USD', 'VTHO-USD', 'AERO-USDC', 'ENS-USDC', 'XLM-USD', 'LDO-USDC', 'MINA-USDC', 'RAD-USDC', '1INCH-EUR', 'T-USD', 'XRP-EUR', 'SHIB-EUR', 'XLM-EUR', 'SPELL-USDC', 'FIDA-USD', 'CHZ-USDT', 'MKR-BTC', 'BCH-BTC', 'AUCTION-USD', 'TVK-USD', 'DAR-USDC', 'RONIN-USD', 'ACH-USDC', 'APE-EUR', 'ICP-GBP', 'DIA-USD', 'XLM-USDT', 'ADA-USD', 'HONEY-USD', 'BAL-USDC', 'XTZ-EUR', 'AAVE-USDC', 'LINK-USDC', 'BNT-USDC', 'BONK-USDC', 'MATH-USD', 'CHZ-EUR', 'FLOW-USDC', 'ADA-BTC', 'WAMPL-USDC', 'AVAX-USD', 'ZEC-USDC', 'LRC-BTC', 'XRP-USDT', 'GTC-USDC', 'DASH-USD', 'AAVE-USD', 'ACH-USD', 'ALICE-USD', 'QI-USD', 'MASK-USD', 'ALEPH-USD', 'PNG-USD', 'GAL-USDC', 'AAVE-EUR', 'STX-USD', 'NKN-USD', 'UMA-USDC', 'DESO-USDC', 'LTC-BTC', 'IMX-USD', 'ERN-USD', 'OSMO-USDC', 'TNSR-USDC', 'DOT-EUR', 'ETC-GBP', 'ALEPH-USDC', 'BCH-GBP', 'RBN-USD', 'WBTC-USDC', 'STRK-USD', 'ATOM-USDT', 'PUNDIX-USD', 'EUROC-USD', 'KNC-USDC', 'SOL-BTC', 'ICP-USD', 'SHDW-USDC', 'LTC-USD', 'SHIB-USDT', 'DOT-USD', 'BTRST-USD', 'BAT-BTC', 'JTO-USD', 'ANKR-USDC', 'CHZ-USDC', 'HBAR-USDT', 'ATOM-USD', 'AURORA-USDC', 'SAND-USDC', 'VARA-USD', 'VARA-USDC', 'AUDIO-USD', 'STX-USDT', 'TRAC-USD', 'NEAR-USDT', 'LTC-GBP', 'ALICE-USDC', 'INV-USD', 'ETH-BTC', 'ALGO-USD', 'ETH-USD', 'LPT-USDC', 'RPL-USD', 'RAI-USDC', 'SOL-GBP', 'AXL-USDC', '1INCH-USD', 'FOX-USD', 'CGLD-USDC', 'ROSE-USDT', 'PUNDIX-USDC', 'AIOZ-USDC', 'LINK-USD', 'TRU-USD', 'SEAM-USD', 'SWFTC-USDC', 'LRC-USDT', 'GYEN-USD', 'ENS-USDT', 'OCEAN-USDC', 'ZETA-USD', 'ORCA-USD', 'SUKU-USDC', 'PAX-USD', 'ASM-USDC', 'NCT-USDC', 'LINK-ETH', 'REQ-USDC', 'BAND-USD', 'CELR-USD', 'DOGE-USDC', 'ENJ-USDC', 'WAXL-USD', 'GRT-USD', 'MTL-USD', 'OP-USDT', 'WBTC-USD', 'EOS-USD', 'CBETH-USDC', 'CVC-USD', 'AMP-USD', 'AURORA-USD', 'KRL-USDC', 'EUROC-USDC', 'GMT-USDT', 'SAND-USD', 'CLV-USD', 'GRT-USDC', 'ETH-GBP', 'GRT-EUR', 'GLM-USDC', 'MATIC-BTC', 'POLS-USD', 'VELO-USD', 'ROSE-USD', 'APT-USDC', 'ETH-USDT', 'CVC-USDC', 'NKN-USDC', 'AST-USD', 'DASH-BTC', 'SKL-USD', 'DYP-USDC', 'XCN-USDC', 'ARPA-USD', 'AXS-BTC', 'ADA-USDC', 'HBAR-USDC', 'BONK-USD', 'BTC-GBP', 'USDT-USDC', 'AST-USDC', 'CVX-USDC', 'EOS-EUR', 'HONEY-USDC', 'FIL-GBP', 'ZRX-USDC', 'VET-USDC', 'FX-USD', 'ETH-USDC', 'LCX-USDC', 'DEXT-USD', 'PLU-USD', 'REQ-USD', 'NEAR-USD', 'ARKM-USD', 'INDEX-USD', 'MNDE-USD', 'IOTX-USD', 'JASMY-USDC', 'ANKR-BTC', 'METIS-USDC', 'AXL-USD', 'MATIC-USDT', 'LINK-GBP', 'AVAX-BTC', 'HFT-USDC', 'ORCA-USDC', 'USDT-GBP', 'XLM-USDC', 'ICP-USDT', 'GNO-USDC', 'NCT-USD', 'SPA-USDC', 'ARB-USDC', 'ETC-USD', 'ALGO-EUR', 'CRO-EUR', 'LSETH-USD', 'INJ-USDC', 'QNT-USDC', 'RLC-USD', '1INCH-GBP', 'BOBA-USD', 'KAVA-USD', 'RENDER-USDC', 'HNT-USDC', 'ENJ-BTC', 'API3-USD', 'MANA-USDC', 'DAI-USD', 'DOT-GBP', 'USDC-GBP', 'RENDER-USD', 'DIMO-USDC', 'TIME-USDC', 'UNI-USD', 'SHDW-USD', 'POWR-USDC', 'MSOL-USD', 'SNX-BTC', 'SOL-USD', 'PYR-USDC', 'BAT-EUR', 'ADA-EUR', 'AVT-USD', 'XTZ-USD', 'BAT-ETH', 'MKR-USD', 'C98-USDC', 'VET-USD', 'BLZ-USD', 'BTC-EUR', 'POND-USD', 'KNC-USD', 'TIME-USD', 'DIA-USDC', 'GRT-BTC', 'ONDO-USD', 'IOTX-USDC', 'FIL-BTC', 'MOBILE-USD', 'SKL-USDC', 'GFI-USD', 'DOGE-USDT', 'GNO-USD', 'SUI-USD', 'OSMO-USD', 'OP-USDC', 'ETC-EUR', 'PRIME-USD', 'CLV-USDC', 'SHPING-USD', 'ACS-USDC', 'SNX-USD', 'ICP-USDC', 'ENS-USD', 'MINA-EUR', 'SUSHI-USD', 'LCX-USD', 'LRC-USDC', 'SUPER-USD', 'INDEX-USDC', 'SUI-USDC', 'LINK-BTC', 'RNDR-USDC', 'MASK-USDC', 'RLC-USDC', 'DYP-USD', 'QNT-USD', '00-USD', 'RARI-USDC', 'NMR-USDC', 'ANKR-EUR', 'ASM-USD', 'AVAX-EUR', 'FLR-USD', 'ADA-USDT', 'MINA-USD', 'APT-USD', 'AKT-USD', 'CBETH-ETH', 'WCFG-USD', 'AVAX-USDT', 'XRP-USD', 'LRC-USD', 'GLM-USD', 'XYO-USDC', 'MPL-USDC', 'PERP-USDC', 'COMP-USDC', 'XTZ-BTC', 'FORTH-USDC', 'ALCX-USDC', 'MANA-EUR', 'FLOW-USDT', 'CTSI-USDC', 'KSM-USDC', 'FIS-USDC', 'LINK-USDT', 'MLN-USD', 'COMP-BTC', 'COMP-USD', 'SOL-EUR', 'AGLD-USDC', 'ARB-USD', 'MTL-USDC', 'ARPA-USDC', 'IDEX-USDC', 'UNI-BTC', 'SNX-USDC', 'CTX-USD', 'LDO-USD', 'METIS-USD', 'GUSD-USD', 'FX-USDC', 'DAR-USD', 'SNX-EUR', '1INCH-BTC', 'BNT-USD', 'FIDA-USDC', 'YFI-USD', 'MEDIA-USDC', 'AIOZ-USD', 'ALGO-USDC', 'COTI-USD', 'UNI-USDC', 'ANKR-USD', 'SEI-USD', 'HNT-USD', 'BAL-BTC', 'TVK-USDC', 'CGLD-USD', 'BICO-USDT', 'PYUSD-USDC', 'DOT-BTC', 'ORN-USDC', 'UNI-EUR', 'ERN-USDC', 'RNDR-USD', 'SAND-USDT', 'AXS-EUR', 'FIL-EUR', 'ETH-DAI', 'BICO-EUR', 'MPL-USD', 'RAI-USD', 'MOBILE-USDC', 'ENJ-USD', 'IMX-USDC', 'MUSE-USD', 'VTHO-USDC', 'EOS-BTC', 'LSETH-ETH', 'SOL-ETH', 'VELO-USDC', 'BIGTIME-USD', 'RBN-USDC', 'MANA-ETH', 'BTC-USDC', 'GMT-USD', 'BIT-USD', 'AVT-USDC', 'TIA-USD', 'CRV-GBP', 'GST-USDC', 'FOX-USDC', 'ORN-USD', 'MASK-GBP', 'MDT-USD', 'GRT-GBP', 'OCEAN-USD', '00-USDC', 'AERGO-USDC', 'BLUR-USD', 'ETC-BTC', 'APE-USDC', 'ICP-BTC', 'MUSE-USDC', 'FARM-USDC', 'MEDIA-USD', 'BTRST-USDC', 'ENJ-USDT', 'BTC-USD', 'JASMY-USD', 'ONDO-USDC', 'FET-USD', 'ADA-GBP', 'RARE-USDC', 'ALCX-USD', 'BAT-USDC', 'PRQ-USD', 'CRV-BTC', 'FLR-USDC', 'GFI-USDC', 'AERO-USD', 'ZEN-USD', 'ELA-USD', 'MDT-USDC', 'CRO-USDC', 'GODS-USD', 'CGLD-BTC', 'AERGO-USD', 'DOGE-BTC', 'PRO-USDC', 'GHST-USD', 'LTC-EUR', 'COVAL-USD', 'FIL-USDC', 'TRB-USD', 'APE-USDT', 'SUSHI-USDC', 'MATIC-USD', 'TRU-USDC', 'ZEN-USDC', 'BLUR-USDC', 'STRK-USDC', 'RPL-USDC', 'BICO-USDC', 'MATIC-EUR', 'MATIC-GBP', 'CBETH-USD', 'PAX-USDC', 'POWR-USD', 'SHIB-USD', 'COTI-USDC', 'LQTY-USD', 'MANA-USD', 'BIGTIME-USDC', 'DOT-USDC', 'MASK-EUR', 'CGLD-EUR', 'DASH-USDC', 'FET-USDT', 'OP-USD', 'MNDE-USDC', 'ETC-USDC', 'CTSI-USD', 'HIGH-USD', 'ZEC-USD', 'BICO-USD', 'GHST-USDC', 'STORJ-USDC', 'KAVA-USDC', 'JTO-USDC', 'GST-USD', 'RARE-USD', 'IMX-USDT', 'XLM-BTC', 'SOL-USDT', 'SHIB-USDC', 'FIL-USD', 'RAD-USD', 'DESO-USD', 'BTC-USDT', 'ZEC-BTC', 'MANA-BTC']
 
 def delivery_report(err, msg):
     if err is not None:
@@ -84,11 +85,11 @@ class CoinbaseAvroProducer:
 
     
     
-    async def publish(self, topic: str, channel: str='level2', product_ids: str='BTC-USD'):
+    async def publish(self, topic: str, channel: str='level2', product_ids: List[str]=['BTC-USD']):
         signature_b64, timestamp = await generate_signature()
         subscribe_message = json.dumps({
             'type': 'subscribe',
-            'channels': [{'name': channel, 'product_ids': [product_ids]}],
+            'channels': [{'name': channel, 'product_ids': product_ids}],
             'signature': signature_b64,
             'key': SANDBOX_API_KEY,
             'passphrase': SANDBOX_PASSPHRASE,
@@ -104,7 +105,7 @@ class CoinbaseAvroProducer:
                         response = await websocket.recv()
                         json_response = json.loads(response)
                         print(f'coinbase json resp = {json_response}')
-                        if i<2: 
+                        if i<len(product_ids)+1: 
                             # skip first two loops since it returns records with keys=['type', 'channels'] and ['type', 'product_id', 'asks', 'bids', 'time']
                             i+=1
                             continue
@@ -128,7 +129,7 @@ class CoinbaseAvroProducer:
                 print('Connection closed, retrying..')
                 await asyncio.sleep(1)
             self.producer.flush()
-            asyncio.sleep(1)
+            await asyncio.sleep(1)
 
 
 if __name__ == "__main__":
@@ -147,8 +148,9 @@ if __name__ == "__main__":
     }
 
     producer = CoinbaseAvroProducer(props=config)
+    product_ids = ['BTC-USD', 'BTC-EUR', 'BTC-GBP'] # the only 3 products subscribable for sandbox environment. 
     try:
-        asyncio.run(producer.publish(topic=KAFKA_TOPIC, channel='level2', product_ids='BTC-USD'))
+        asyncio.run(producer.publish(topic=KAFKA_TOPIC, channel='level2', product_ids=product_ids))
     except KeyboardInterrupt:
         print("Exiting WebSocket..")
     

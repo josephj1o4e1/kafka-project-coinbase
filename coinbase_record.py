@@ -7,7 +7,6 @@ class CoinbaseRecord:
         self.type = arr[0]
         self.product_id = arr[1]
         self.changes = arr[2]
-        print(f'self.changes[0]={self.changes[0]}\nself.changes[0] type={type(self.changes[0])}\n')
         self.time = arr[3]
 
     @classmethod
