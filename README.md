@@ -3,7 +3,7 @@
 ![project-techstack-logo](assets/images/dezoom-project-techstack.drawio.svg)
 
 ## Introduction  
-This is a python Kafka project (DE zoom camp) streaming Coinbase WebSocket feed market data.  
+This is the final project repo of Kafka streaming data pipeline for real-time Coinbase market data analysis.   
 ### **Environment:**  
 OS: WSL (Linux AMD64)  
 Package Manager: Conda  
