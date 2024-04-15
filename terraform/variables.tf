@@ -35,6 +35,29 @@ variable "confluent_kafka_api_secret" {
   sensitive   = true
 }
 
+variable "confluent_schema_registry_id" {
+  description = "My Confluent Schema Registry Endpoint"
+  sensitive   = true
+}
+
+variable "confluent_schema_registry_url" {
+  description = "My Confluent Schema Registry Endpoint"
+  sensitive   = true
+}
+
+variable "confluent_schema_registry_api_key" {
+  description = "My Confluent Schema Registry API Key"
+  sensitive   = true
+}
+
+variable "confluent_schema_registry_api_secret" {
+  description = "My Confluent Schema Registry API Secret"
+  sensitive   = true
+}
+
+
+
+
 
 # GCP Resource Variables
 variable "gcp_project" {

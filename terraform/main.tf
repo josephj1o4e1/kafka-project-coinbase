@@ -46,3 +46,40 @@ resource "confluent_kafka_topic" "coinbase_avro" {
   partitions_count = 4
 }
 
+# Create Schema in Confluent Schema Registry (value)
+resource "confluent_schema" "coinbase_avro_value_schema" {
+  schema_registry_cluster {
+    id = var.confluent_schema_registry_id
+  }
+  rest_endpoint = var.confluent_schema_registry_url
+  subject_name = "coinbase_avro-value"
+  format = "AVRO"
+  schema = file("../resources/schemas/coinbase_value.avsc")
+  credentials {
+    key    = var.confluent_schema_registry_api_key
+    secret = var.confluent_schema_registry_api_secret
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+# Create Schema in Confluent Schema Registry (key)
+resource "confluent_schema" "coinbase_avro_key_schema" {
+  schema_registry_cluster {
+    id = var.confluent_schema_registry_id
+  }
+  rest_endpoint = var.confluent_schema_registry_url
+  subject_name = "coinbase_avro-key"
+  format = "AVRO"
+  schema = file("../resources/schemas/coinbase_key.avsc")
+  credentials {
+    key    = var.confluent_schema_registry_api_key
+    secret = var.confluent_schema_registry_api_secret
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
