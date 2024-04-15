@@ -42,7 +42,7 @@ resource "google_bigquery_dataset" "dezoom_coinbase_stream_terraform" {
 # Define Confluent Cloud resources
 # Create a Confluent Kafka Topic
 resource "confluent_kafka_topic" "coinbase_avro" {
-  topic_name = "coinbase_avro"
+  topic_name       = "coinbase_avro"
   partitions_count = 4
 }
 
@@ -52,9 +52,9 @@ resource "confluent_schema" "coinbase_avro_value_schema" {
     id = var.confluent_schema_registry_id
   }
   rest_endpoint = var.confluent_schema_registry_url
-  subject_name = "coinbase_avro-value"
-  format = "AVRO"
-  schema = file("../resources/schemas/coinbase_value.avsc")
+  subject_name  = "coinbase_avro-value"
+  format        = "AVRO"
+  schema        = file("../resources/schemas/coinbase_value.avsc")
   credentials {
     key    = var.confluent_schema_registry_api_key
     secret = var.confluent_schema_registry_api_secret
@@ -71,9 +71,9 @@ resource "confluent_schema" "coinbase_avro_key_schema" {
     id = var.confluent_schema_registry_id
   }
   rest_endpoint = var.confluent_schema_registry_url
-  subject_name = "coinbase_avro-key"
-  format = "AVRO"
-  schema = file("../resources/schemas/coinbase_key.avsc")
+  subject_name  = "coinbase_avro-key"
+  format        = "AVRO"
+  schema        = file("../resources/schemas/coinbase_key.avsc")
   credentials {
     key    = var.confluent_schema_registry_api_key
     secret = var.confluent_schema_registry_api_secret
