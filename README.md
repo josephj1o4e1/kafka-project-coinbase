@@ -41,5 +41,5 @@ Utilized ksqlDB to perform real-time data transformations, enrichments, and aggr
 Please follow the next section to reproduce the pipeline.    
  
 
-## How to use the code, step-by-step:   
+## Reproduce this pipeline, step-by-step:   
 
