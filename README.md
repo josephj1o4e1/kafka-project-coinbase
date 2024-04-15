@@ -1,4 +1,7 @@
 # kafka-project-coinbase
+
+![project-techstack-logo](assets/images/dezoom-project-techstack.drawio.svg)
+
 ## Introduction  
 This is a python Kafka project (DE zoom camp) streaming Coinbase WebSocket feed market data.  
 ### **Environment:**  
