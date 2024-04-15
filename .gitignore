@@ -5,3 +5,9 @@ __pycache__
 *test*.py
 *.json
 /ignored
+
+# Ignore Terraform .terraform directory
+.terraform/
+keys/
+# Ignore Terraform lock file
+*.lock.hcl
