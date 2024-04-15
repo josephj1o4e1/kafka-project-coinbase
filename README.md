@@ -18,7 +18,7 @@ This streaming data pipeline encompasses the following key aspects:
 ### **Cloud:**  
 The project is developed in Confluent Cloud and BigQuery. Terraform is used as my IaC tool.  
  
-### **Data ingestion (choose either batch or stream):**  
+### **Data ingestion:**  
 Using consumer/producers and streaming technologies like Kafka streaming from local producer python script to Confluent Cloud.  
  
 ### **Data warehouse:**   
