@@ -18,6 +18,8 @@ The project is developed in Confluent Cloud and BigQuery. Terraform is used as m
 ### **Data ingestion:**  
 (producer_coinbase.py)  
 Utilizing Kafka as the streaming tool, the repository employs the producer_coinbase.py script to ingest real-time market data from the Coinbase WebSocket feed. Functioning as a local producer, this script retrieves data from the WebSocket, processes it, and publishes messages to Confluent Cloud Topics. This script bridges the gap between the Coinbase feed and Confluent Cloud.  
+(no consumer script)  
+Consumer script is not really needed since I use Confluent's BigQuery Sink Connector v2 as my consumer to consume the data and send to BigQuery. Visit this [LINK](https://www.confluent.io/resources/demo/bigquery-cloud-data-warehouse-streaming-pipelines/?utm_term=&creative=&device=c&placement=&gad_source=1) to know more.  
  
 ### **Data warehouse:**   
 (bigquery_partition.sql)  
