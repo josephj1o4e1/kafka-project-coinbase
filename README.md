@@ -4,6 +4,7 @@
 
 ## Introduction  
 This final project repo includes a Kafka streaming data pipeline for real-time Coinbase market data analysis.   
+If you like this project, feel free to star this repo!  
 
 ### **Problem description:**  
 This repository addresses the need for real-time monitoring of Coinbase market data updates, focusing on orders and trades. By implementing a streaming data pipeline, it enables traders to stay informed about trading volume and values across various virtual currencies on Coinbase.    
