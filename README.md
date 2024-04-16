@@ -67,37 +67,37 @@ Confluent Cloud Free Account
 5. Create a Confluent Kafka Environment and Cluster.  
 
 6. **.env** file: Copy template.env to .env, and start filling in the variables. 
-	- COINBASE_KEY_SCHEMA_PATH='resources/schemas/coinbase_key.avsc'  
-	- COINBASE_VALUE_SCHEMA_PATH='resources/schemas/coinbase_value.avsc'  
+	- `COINBASE_KEY_SCHEMA_PATH`='resources/schemas/coinbase_key.avsc'  
+	- `COINBASE_VALUE_SCHEMA_PATH`='resources/schemas/coinbase_value.avsc'  
 
 	Confluent Cloud Console:  
-	- BOOTSTRAP_SERVERS:  
+	- `BOOTSTRAP_SERVERS`:  
 		Navigate to Environments/Environment/Cluster/Cluster Settings and you'll see it.  
-	- CLUSTER_API_KEY, CLUSTER_API_SECRET: 
+	- `CLUSTER_API_KEY`, `CLUSTER_API_SECRET`: 
 		Navigate to Environments/Environment/Cluster/API Keys and add API key.  
-	- KAFKA_TOPICS="coinbase_avro"  
-	- SCHEMA_REGISTRY_URL(endpoint), SCHEMA_REGISTRY_API_KEY, SCHEMA_REGISTRY_API_SECRET:  
+	- `KAFKA_TOPICS`="coinbase_avro"  
+	- `SCHEMA_REGISTRY_URL`(endpoint), `SCHEMA_REGISTRY_API_KEY`, `SCHEMA_REGISTRY_API_SECRET`:  
 		Navigate to Environments/<YOUR ENV>/Stream Governance API.  
 		Follow this [LINK](https://docs.confluent.io/cloud/current/get-started/schema-registry.html#create-an-api-key-for-ccloud-sr) to learn more about creating schema registration key.   
 	
 	Coinbase Sandbox API:  
-	- SANDBOX_API_KEY, SANDBOX_PASSPHRASE, SANDBOX_SECRET_KEY:  
+	- `SANDBOX_API_KEY`, `SANDBOX_PASSPHRASE`, `SANDBOX_SECRET_KEY`:  
 		Sign up and Log into the [sandbox web interface](https://public.sandbox.exchange.coinbase.com/), and go to the "API" tab to create an API key.  
 
 7. **secret.tfvars** file: Copy template_secret.tfvars to secret.tfvars, and start filling in the variables.  
 	GCP:  
-	- gcp_credentials:  
+	- `gcp_credentials`:  
 		path of your (credential) .json file    
-	- gcp_project: 
+	- `gcp_project`: 
 		name of your gcp project (project id).  
 	
 	Confluent Cloud:  
-	- confluent_cloud_api_key, confluent_cloud_api_secret:  
+	- `confluent_cloud_api_key`, `confluent_cloud_api_secret`:  
 		Create a cloud api key on confluent cloud console (under the main tab on the upperright).   
-	- confluent_kafka_id, confluent_kafka_rest_endpoint:  
+	- `confluent_kafka_id`, `confluent_kafka_rest_endpoint`:  
 		Go to cluster settings to get kafka cluster id and rest endpoint.  
-	- confluent_kafka_api_key, confluent_kafka_api_secret:  
-		Same as CLUSTER_API_KEY, CLUSTER_API_SECRET in .env  
+	- `confluent_kafka_api_key`, `confluent_kafka_api_secret`:  
+		Same as `CLUSTER_API_KEY`, `CLUSTER_API_SECRET` in .env  
 
 8. Run terraform (bigquery dataset, confluent topic, confluent schema registry).   
 	- install terraform if you haven't yet (mine is linux amd64)  
