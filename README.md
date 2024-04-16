@@ -53,7 +53,7 @@ Confluent Cloud Free Account
 	`git clone https://github.com/josephj1o4e1/kafka-project-coinbase.git`
 
 2. Create the conda environment.  
-	`conda env create -f environment.yml`
+	`conda env create -f environment.yml`  
 	`conda activate dezoom-project-reproduce`
 
 3. Create a BigQuery project.  
