@@ -126,4 +126,26 @@ Please finish all the setup steps above first.
 It should look something like this:  
 <img width="791" alt="terminal_view_streaming" src="https://github.com/josephj1o4e1/kafka-project-coinbase/assets/13396370/cdb76be8-fdd8-464c-8d63-750457eb43dd">
 
+2. BigQuery table Partitioning and Clustering. 
+	Have a look at bigquery_partition.sql and run the sql query in your BigQuery project to partition and cluster the table.  
+	Partitioned by time-hour, and clustered by product_id.  
+	```
+	Performance after Partitioning and Clustering: 
+	-- process 22.13MB
+	SELECT * FROM <TABLE_NAME> 
+	where PRODUCT_ID='BTC-EUR' and time between '2024-04-13T07:00:00' and '2024-04-13T9:00:00'
+	limit 1000
+	;
+	-- process 2.35MB
+	SELECT * FROM <TABLE_NAME_PARTITIONED_CLUSTERED> 
+	where PRODUCT_ID='BTC-EUR' and time between '2024-04-13T07:00:00' and '2024-04-13T9:00:00'
+	limit 1000
+	;
+	```
+
+3. Looker Studio. 
+	Visualize the data on Looker studio. 
+	[Here's the link](https://lookerstudio.google.com/reporting/3711d375-9496-4ce0-be5b-46e5345048c6) of my simple analysis and visualization. 
+
+
 
