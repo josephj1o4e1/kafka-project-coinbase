@@ -67,9 +67,10 @@ Confluent Cloud Free Account
 		- IAM&admin -> service accounts -> create new service account -> choose only BigQuery Admin Permission
 		- Click the 3dots -> manage keys -> create a new key(JSON) -> save to terraform/keys/ folder
 
-5. Create a Confluent Kafka Environment and Cluster.  
+5. Create a Confluent Kafka Environment and Cluster.
+	- https://docs.confluent.io/cloud/current/get-started/index.html 
 
-6. **.env** file: Copy template.env to .env, and start filling in the variables. 
+7. **.env** file: Copy template.env to .env, and start filling in the variables. 
 	- `COINBASE_KEY_SCHEMA_PATH`='resources/schemas/coinbase_key.avsc'  
 	- `COINBASE_VALUE_SCHEMA_PATH`='resources/schemas/coinbase_value.avsc'  
 
@@ -87,7 +88,7 @@ Confluent Cloud Free Account
 	- `SANDBOX_API_KEY`, `SANDBOX_PASSPHRASE`, `SANDBOX_SECRET_KEY`:  
 		Sign up and Log into the [sandbox web interface](https://public.sandbox.exchange.coinbase.com/), and go to the "API" tab to create an API key.  
 
-7. **secret.tfvars** file: Copy template_secret.tfvars to secret.tfvars, and start filling in the variables.  
+8. **secret.tfvars** file: Copy template_secret.tfvars to secret.tfvars, and start filling in the variables.  
 	GCP:  
 	- `gcp_credentials`:  
 		path of your (credential) .json file    
@@ -102,7 +103,7 @@ Confluent Cloud Free Account
 	- `confluent_kafka_api_key`, `confluent_kafka_api_secret`:  
 		Same as `CLUSTER_API_KEY`, `CLUSTER_API_SECRET` in .env  
 
-8. Run terraform (bigquery dataset, confluent topic, confluent schema registry).   
+9. Run terraform (bigquery dataset, confluent topic, confluent schema registry).   
 	- install terraform if you haven't yet (mine is linux amd64)  
 		https://developer.hashicorp.com/terraform/install (use terraform --help command to confirm installation)  
 	- `cd terraform/`   
@@ -110,14 +111,14 @@ Confluent Cloud Free Account
 	- `terraform plan -var-file="secret.tfvars"` (this make sure credentials work and prepared resources are correct)   
 	- `terraform apply -var-file="secret.tfvars"` 
 
-9. Setup ksqlDB stream processing/transformation.  
+10. Setup ksqlDB stream processing/transformation.  
 	Although our avro works on Confluent Kafka, the avro schema changes when sent to BigQuery since Nested arrays are not supported by BigQuery yet.  
 	- Create a ksqldb cluster. All default is fine.  
 	- Go to Streams tab -> Import topics as stream -> choose coinbase_avro.  
 	- Go to Editor tab -> run the two queries in the transform_changes.sql under the resources/ folder, one at a time.  
 	- Now you should already have two streams created: coinbase_avro_explode, coinbase_avro_flat. You should also have Two topics created that have the suffix coinbase_avro_explode and coinbase_avro_flat.  
 
-10. Add Confluent Google BigQuery Sink v2 Connector. 
+11. Add Confluent Google BigQuery Sink v2 Connector. 
 	- Choose topic to stream from: choose the topic that has "coinbase_avro_flat" as suffix.  
 	- Use an existing API key: Enter CLUSTER_API_KEY, CLUSTER_API_SECRET (to allow the connector to only have permissions to that Kafka cluster).  
 	- Connect with Google Cloud: Set OAuth 2.0 permission to connect to BigQuery.  
