@@ -103,8 +103,8 @@ Confluent Cloud Free Account
 	- install terraform if you haven't yet (mine is linux amd64)  
 		https://developer.hashicorp.com/terraform/install (use terraform --help command to confirm installation)  
 	- `cd terraform/`   
-	- `terraform init #get providers ` 
-	- `terraform plan -var-file="secret.tfvars" #this make sure credentials work and prepared resources are correct`  
+	- `terraform init` (get providers)  
+	- `terraform plan -var-file="secret.tfvars"` (this make sure credentials work and prepared resources are correct)   
 	- `terraform apply -var-file="secret.tfvars"` 
 
 9. Setup ksqlDB stream processing/transformation.  
