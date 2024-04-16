@@ -3,7 +3,7 @@
 ![project-techstack-logo](assets/images/dezoom-project-techstack.drawio.svg)
 
 ## Introduction  
-This is the final project repo of Kafka streaming data pipeline for real-time Coinbase market data analysis.   
+This final project repo includes a Kafka streaming data pipeline for real-time Coinbase market data analysis.   
 ### **Environment:**  
 OS: WSL (Linux AMD64)  
 Package Manager: Conda  
@@ -19,7 +19,7 @@ This streaming data pipeline encompasses the following key aspects:
 The project is developed in Confluent Cloud and BigQuery. Terraform is used as my IaC tool.  
  
 ### **Data ingestion:**  
-Using consumer/producers and streaming technologies like Kafka streaming from local producer python script to Confluent Cloud.  
+Utilizing Kafka as the streaming tool, the repository employs the producer_coinbase.py script to ingest real-time market data from the Coinbase WebSocket feed. Functioning as a local producer, this script retrieves data from the WebSocket, processes it, and publishes messages to Confluent Cloud Topics. This script bridges the gap between the Coinbase feed and Confluent Cloud.  
  
 ### **Data warehouse:**   
 Streamed data to BigQuery tables, and the tables are partitioned and clustered in a way that makes sense for the upstream queries.   
@@ -42,4 +42,6 @@ Please follow the next section to reproduce the pipeline.
  
 
 ## Reproduce this pipeline, step-by-step:   
+
+
 
