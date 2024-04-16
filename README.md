@@ -29,7 +29,7 @@ Streamed data to BigQuery tables, and the tables are partitioned and clustered i
   
 ### **Transformations:**   
 (ksqldb/transform_changes.sql)  
-Utilized ksqlDB to perform real-time data transformations, enrichments, and aggregations on the incoming data streams from Coinbase. The reason for the transformation is that our data includes an attribute called "changes" that is a nested array. While nested arrays are supported by AVRO on Confluent Kafka, it is not yet supported by AVRO on BigQuery. Therefore, we perform necessary transformations to ensure that the data meets the type requirements for AVRO on BigQuery.  
+Utilized ksqlDB to perform real-time data transformations, enrichments, and aggregations on the incoming data streams from Coinbase. One of the reasons for the transformation is that our data includes an attribute called "changes" that is a nested array. While nested arrays are supported by AVRO on Confluent Kafka, it is not yet supported by AVRO on BigQuery. Therefore, we perform necessary transformations to ensure that the data meets the type requirements for AVRO on BigQuery.  
  
 ### **Dashboard:**   
 [My Interactive Looker Dashboard](https://lookerstudio.google.com/reporting/3711d375-9496-4ce0-be5b-46e5345048c6) that visualizes simple analytical results after 10 hours of continuous streaming.   
@@ -133,16 +133,19 @@ Please finish all the setup steps above first.
 It should look something like this:  
 <img width="791" alt="terminal_view_streaming" src="https://github.com/josephj1o4e1/kafka-project-coinbase/assets/13396370/cdb76be8-fdd8-464c-8d63-750457eb43dd">
 
-2. BigQuery table Partitioning and Clustering. 
+2. BigQuery table Partitioning and Clustering.  
 	Have a look at bigquery_partition.sql and run the sql query in your BigQuery project to partition and cluster the table.  
-	Partitioned by time-hour, and clustered by product_id.  
+	Change `TABLE_NAME` and `TABLE_NAME_PARTITIONED_CLUSTERED` to your desired table name.  
+	Partitioned by time (hour), and clustered by product_id.  
+	After partitioning and clustering the original table, you can compare the performance improvement like this:  
 	```
-	Performance after Partitioning and Clustering: 
+	-- Performance before Partitioning and Clustering: 
 	-- process 22.13MB
 	SELECT * FROM <TABLE_NAME> 
 	where PRODUCT_ID='BTC-EUR' and time between '2024-04-13T07:00:00' and '2024-04-13T9:00:00'
 	limit 1000
 	;
+	-- Performance after Partitioning and Clustering: 
 	-- process 2.35MB
 	SELECT * FROM <TABLE_NAME_PARTITIONED_CLUSTERED> 
 	where PRODUCT_ID='BTC-EUR' and time between '2024-04-13T07:00:00' and '2024-04-13T9:00:00'
@@ -150,8 +153,8 @@ It should look something like this:
 	;
 	```
 
-3. Looker Studio. 
-	Visualize the data on Looker studio. 
+3. Looker Studio.  
+	Visualize the data on Looker studio.  
 	[Here's the link](https://lookerstudio.google.com/reporting/3711d375-9496-4ce0-be5b-46e5345048c6) of my simple analysis and visualization. 
 
 
