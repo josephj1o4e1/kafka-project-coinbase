@@ -14,6 +14,7 @@ This streaming data pipeline encompasses the following key aspects:
 
 ### **Cloud:**  
 The project is developed in Confluent Cloud and BigQuery. Terraform is used as my IaC tool.  
+However, some resources on Confluent are better to create using Confluent Cloud Console due to better security practice.  
  
 ### **Data ingestion:**  
 (producer_coinbase.py)  
