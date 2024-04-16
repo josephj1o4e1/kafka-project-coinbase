@@ -63,8 +63,8 @@ Confluent Cloud Free Account
 
 4. Get BigQuery api keys/credentials   
 	- Create keys/ folder under terraform folder
- 	- In GCP Cloud Console, create service account(only need BigQuery Admin Permission):  
-		- IAM&admin -> service accounts -> create new service account -> BigQuery Admin Permission
+ 	- In GCP Cloud Console, create service account:  
+		- IAM&admin -> service accounts -> create new service account -> choose only BigQuery Admin Permission
 		- Click the 3dots -> manage keys -> create a new key(JSON) -> save to terraform/keys/ folder
 
 5. Create a Confluent Kafka Environment and Cluster.  
