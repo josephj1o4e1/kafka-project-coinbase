@@ -14,6 +14,7 @@ This streaming data pipeline encompasses the following key aspects:
 
 ### **Cloud:**  
 The project is developed in Confluent Cloud and BigQuery. Terraform is used as my IaC tool.  
+However, some resources on Confluent are better to create using Confluent Cloud Console due to better security practice.  
  
 ### **Data ingestion:**  
 (producer_coinbase.py)  
@@ -61,8 +62,10 @@ Confluent Cloud Free Account
 3. Create a BigQuery project.  
 
 4. Get BigQuery api keys/credentials   
-	- create keys/ folder under terraform folder
-	- put (credential) .json file under keys/ folder
+	- Create keys/ folder under terraform folder
+ 	- In GCP Cloud Console, create service account:  
+		- IAM&admin -> service accounts -> create new service account -> choose only BigQuery Admin Permission
+		- Click the 3dots -> manage keys -> create a new key(JSON) -> save to terraform/keys/ folder
 
 5. Create a Confluent Kafka Environment and Cluster.  
 
@@ -102,10 +105,10 @@ Confluent Cloud Free Account
 8. Run terraform (bigquery dataset, confluent topic, confluent schema registry).   
 	- install terraform if you haven't yet (mine is linux amd64)  
 		https://developer.hashicorp.com/terraform/install (use terraform --help command to confirm installation)  
-	- cd to terraform/ folder.   
-	- terraform init (get providers)  
-	- terraform plan -var-file="secret.tfvars" (this make sure credentials work and prepared resources are correct)  
-	- terraform apply -var-file="secret.tfvars"  
+	- `cd terraform/`   
+	- `terraform init` (get providers)  
+	- `terraform plan -var-file="secret.tfvars"` (this make sure credentials work and prepared resources are correct)   
+	- `terraform apply -var-file="secret.tfvars"` 
 
 9. Setup ksqlDB stream processing/transformation.  
 	Although our avro works on Confluent Kafka, the avro schema changes when sent to BigQuery since Nested arrays are not supported by BigQuery yet.  
