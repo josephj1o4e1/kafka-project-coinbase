@@ -14,7 +14,7 @@ We achieve this by streaming data from Coinbase's ["Exchange Websocket Direct Ma
 This streaming data pipeline encompasses the following key aspects:  
 
 ### **Cloud:**  
-The project is developed in Confluent Cloud and BigQuery. Terraform is used as my IaC tool.  
+The project is developed in Confluent Cloud and BigQuery. Terraform is used as my IaC tool to create resources.  
 However, some resources on Confluent are better to create using Confluent Cloud Console due to better security practice.  
  
 ### **Data ingestion:**  
