@@ -52,7 +52,7 @@ Confluent Cloud Free Account
 
 ### **Step-by-step Setup**
 1. Git Clone this repo and navigate to project directory.  
-	`git clone https://github.com/josephj1o4e1/kafka-project-coinbase.git`
+	`git clone https://github.com/josephj1o4e1/kafka-project-coinbase.git`  
 	`cd kafka-project-coinbase`  
 
 3. Create the conda environment.  
