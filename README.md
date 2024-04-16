@@ -123,5 +123,7 @@ Confluent Cloud Free Account
 ## 2. Usage   
 Please finish all the setup steps above first.  
 1. Simply run `python producer_coinbase.py`.  Streaming begins.  
+It should look something like this:  
+
 
 
