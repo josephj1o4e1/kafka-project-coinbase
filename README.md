@@ -4,7 +4,7 @@
 
 ## Introduction  
 This final project repo includes real-time Coinbase market streaming pipeline.   
-The above graph is a brief summary of my streaming pipeline. My Kafka producer is written in python, that ingests data source from Coinbase, and publish to a Confluent Kafka Topic. Before feeding it to a consumer, I use ksqlDB as my stream processor to handle necessary transformation. My Kafka consumer is a managed Confluent connector that consumes the messages and directly pipes it to a BigQuery Table.   
+The above graph is a brief summary of my streaming pipeline. My Kafka producer is written in python that ingests data source from Coinbase, and publish to a Confluent Kafka Topic. Before feeding it to a consumer, I use ksqlDB as my stream processor to handle necessary transformation. My Kafka consumer is a managed Confluent connector that consumes the messages from ksqlDB and directly pipes it to a BigQuery Table.   
 
 ### **Problem description:**  
 This repository addresses the need for real-time monitoring of Coinbase market data updates, focusing on orders and trades. By implementing a streaming data pipeline, it enables traders to stay informed about trading volume and values across various virtual currencies on Coinbase.    
