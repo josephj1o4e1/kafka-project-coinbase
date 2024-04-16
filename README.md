@@ -8,7 +8,7 @@ The above graph is a brief summary of my streaming pipeline. My Kafka producer i
 
 ### **Problem description:**  
 This repository addresses the need for real-time monitoring of Coinbase market data updates, focusing on orders and trades. By implementing a streaming data pipeline, it enables traders to stay informed about trading volume and values across various virtual currencies on Coinbase.    
-We achieve this by streaming data from Coinbase's ["Exchange Websocket Direct Market Data"](https://docs.cloud.coinbase.com/exchange/docs/websocket-overview) feeding it into Confluent Kafka, store data on BigQuery, and ultimately use Looker Studio to build visualizations for some insights of trading trends.  
+We achieve this by streaming data from Coinbase's ["Exchange Websocket Direct Market Data"](https://docs.cloud.coinbase.com/exchange/docs/websocket-overview) feeding it into Confluent Kafka, store data on BigQuery, and ultimately use Looker Studio to build visualizations for insights of trading trends.  
 
 
 This streaming data pipeline encompasses the following key aspects:  
