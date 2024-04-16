@@ -29,7 +29,7 @@ Streamed data to BigQuery tables, and the tables are partitioned and clustered i
   
 ### **Transformations:**   
 (ksqldb/transform_changes.sql)  
-Utilized ksqlDB to perform real-time data transformations, enrichments, and aggregations on the incoming data streams from Coinbase.   
+Utilized ksqlDB to perform real-time data transformations, enrichments, and aggregations on the incoming data streams from Coinbase. The reason for the transformation is that our data includes an attribute called "changes" that is a nested array. While nested arrays are supported by AVRO on Confluent Kafka, it is not yet supported by AVRO on BigQuery. Therefore, we perform necessary transformations to ensure that the data meets the type requirements for AVRO on BigQuery.  
  
 ### **Dashboard:**   
 [My Interactive Looker Dashboard](https://lookerstudio.google.com/reporting/3711d375-9496-4ce0-be5b-46e5345048c6) that visualizes simple analytical results after 10 hours of continuous streaming.   
@@ -93,7 +93,7 @@ Confluent Cloud Free Account
 	GCP:  
 	- `gcp_credentials`:  
 		path of your (credential) .json file    
-	- `gcp_project`: 
+	- `gcp_project`:  
 		name of your gcp project (project id).  
 	
 	Confluent Cloud:  
@@ -105,15 +105,14 @@ Confluent Cloud Free Account
 		Same as `CLUSTER_API_KEY`, `CLUSTER_API_SECRET` in .env  
 
 9. Run terraform (bigquery dataset, confluent topic, confluent schema registry).   
-	- install terraform if you haven't yet (mine is linux amd64)  
+	- Install Terraform if you haven't already (I use Linux AMD64)  
 		https://developer.hashicorp.com/terraform/install (use terraform --help command to confirm installation)  
 	- `cd terraform/`   
 	- `terraform init` (get providers)  
-	- `terraform plan -var-file="secret.tfvars"` (this make sure credentials work and prepared resources are correct)   
+	- `terraform plan -var-file="secret.tfvars"` (this make sure credentials work and let you inspect prepared resources)   
 	- `terraform apply -var-file="secret.tfvars"` 
 
-10. Setup ksqlDB stream processing/transformation.  
-	Although our avro works on Confluent Kafka, the avro schema changes when sent to BigQuery since Nested arrays are not supported by BigQuery yet.  
+10. Setup ksqlDB.  
 	- Create a ksqldb cluster. All default is fine.  
 	- Go to Streams tab -> Import topics as stream -> choose coinbase_avro.  
 	- Go to Editor tab -> run the two queries in the transform_changes.sql under the resources/ folder, one at a time.  
