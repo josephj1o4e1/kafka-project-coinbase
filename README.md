@@ -132,6 +132,7 @@ After finishing all the setup steps above:
 1. Simply run `python producer_coinbase.py`.  Streaming begins.  
 It should look something like this:  
 <img width="791" alt="terminal_view_streaming" src="https://github.com/josephj1o4e1/kafka-project-coinbase/assets/13396370/cdb76be8-fdd8-464c-8d63-750457eb43dd">
+Check if your data is sent to the BigQuery Table.  
 
 2. BigQuery table Partitioning and Clustering.  
 	Have a look at bigquery_partition.sql and run the sql query in your BigQuery project to partition and cluster the table.  
