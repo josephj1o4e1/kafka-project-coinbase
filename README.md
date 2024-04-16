@@ -124,6 +124,6 @@ Confluent Cloud Free Account
 Please finish all the setup steps above first.  
 1. Simply run `python producer_coinbase.py`.  Streaming begins.  
 It should look something like this:  
-
+<img width="791" alt="terminal_view_streaming" src="https://github.com/josephj1o4e1/kafka-project-coinbase/assets/13396370/cdb76be8-fdd8-464c-8d63-750457eb43dd">
 
 
