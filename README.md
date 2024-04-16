@@ -4,32 +4,30 @@
 
 ## Introduction  
 This final project repo includes real-time Coinbase market streaming pipeline.   
-The above graph is a brief summary of my streaming pipeline. My Kafka producer is written in python that ingests data source from Coinbase, and publish to a Confluent Kafka Topic. Before feeding it to a consumer, I use ksqlDB to handle necessary stream processing/transformation. My Kafka consumer is a managed Confluent connector that consumes the messages from ksqlDB and directly pipes it to a BigQuery Table.   
+The above graph is a brief summary of my streaming pipeline. My Kafka producer, written in Python, ingests data from Coinbase and publishes it to a Confluent Kafka Topic. Prior to consumption, I use ksqlDB for essential stream processing and transformation. For consuming the data, I utilize a managed Confluent connector as my Kafka consumer, which retrieves messages from ksqlDB and transfers them to a BigQuery Table.     
 
 ### **Problem description:**  
-This repository addresses the need for real-time monitoring of Coinbase market data updates, focusing on orders and trades. By implementing a streaming data pipeline, it enables traders to stay informed about trading volume and values across various virtual currencies on Coinbase.    
-We achieve this by streaming data from Coinbase's ["Exchange Websocket Direct Market Data"](https://docs.cloud.coinbase.com/exchange/docs/websocket-overview) feeding it into Confluent Kafka, store data on BigQuery, and ultimately use Looker Studio to build visualizations for insights of trading trends.  
-
+This repository fulfills the requirement for real-time monitoring of Coinbase market data updates, specifically focusing on orders and trades. Through the implementation of a streaming data pipeline, it empowers traders with up-to-date information on trading volume and values across various virtual currencies on Coinbase.  
+This is achieved by streaming data from Coinbase's ["Exchange Websocket Direct Market Data"](https://docs.cloud.coinbase.com/exchange/docs/websocket-overview), feeding it into Confluent Kafka for processing, storing the processed data on BigQuery, and ultimately leveraging Looker Studio to construct visualizations for insights into trading trends.  
 
 This streaming data pipeline encompasses the following key aspects:  
 
 ### **Cloud:**  
-The project is developed in Confluent Cloud and BigQuery. Terraform is used as my IaC tool to create resources.  
-However, some resources on Confluent are better to create using Confluent Cloud Console due to better security practice.  
+The project is developed using Confluent Cloud and BigQuery. Terraform serves as the Infrastructure as Code (IaC) tool for resource creation. However, it's worth noting that certain resources on Confluent are best created using the Confluent Cloud Console for enhanced security practices. Rest assured, I'll provide guidance wherever possible throughout the process.  
  
 ### **Data ingestion:**  
-(producer_coinbase.py)  
-Utilizing Kafka as the streaming tool, the repository employs the producer_coinbase.py script to ingest real-time market data from the Coinbase WebSocket feed. Functioning as a local producer, this script retrieves data from the WebSocket, processes it, and publishes messages to Confluent Cloud Topics. This script bridges the gap between the Coinbase feed and Confluent Cloud.  
-(no consumer script)  
-Consumer script is not really needed since I use Confluent's BigQuery Sink Connector v2 as my consumer to consume the data and send to BigQuery. Visit this [LINK](https://www.confluent.io/resources/demo/bigquery-cloud-data-warehouse-streaming-pipelines/?utm_term=&creative=&device=c&placement=&gad_source=1) to know more.  
+Producer:    
+Utilizing Kafka as the streaming tool, this repository employs the `producer_coinbase.py` script to ingest real-time market data from the Coinbase WebSocket feed. Acting as a local producer, this script retrieves data from the WebSocket, processes it, and publishes messages to Confluent Cloud Topics. In essence, it serves as a vital link between the Coinbase feed and Confluent Cloud, facilitating seamless data flow.  
+Consumer:   
+The consumer script is not essential in this setup because I utilize Confluent's BigQuery Sink Connector v2 to consume the data and send it directly to BigQuery. Visit this [LINK](https://www.confluent.io/resources/demo/bigquery-cloud-data-warehouse-streaming-pipelines/?utm_term=&creative=&device=c&placement=&gad_source=1).  
  
-### **Data warehouse:**   
-(bigquery_partition.sql)  
-Streamed data to BigQuery tables, and the tables are partitioned and clustered in a way that makes sense for the upstream queries. Partitioning data on the timestamp column at the hourly level can significantly improve query performance for time-based queries. Clustering by PRODUCT_ID ensures that the data within each partition is physically sorted on the product ID column, which makes sense for GROUP BY clauses.   
+### **Data warehouse:**    
+Data has been streamed to BigQuery tables, where they are partitioned and clustered to optimize upstream queries. Refer to `bigquery_partition.sql` for details.   
+Partitioning data based on the `TIME` column at the hourly level can notably enhance query performance for time-based queries. Additionally, clustering by `PRODUCT_ID` ensures that data within each partition is logically sorted based on the product ID column, aligning well with GROUP BY clauses.     
   
-### **Transformations:**   
-(ksqldb/transform_changes.sql)  
-Utilized ksqlDB to perform real-time data transformations, enrichments, and aggregations on the incoming data streams from Coinbase. One of the reasons for the transformation is that our data includes an attribute called "changes" that is a nested array. While nested arrays are supported by AVRO on Confluent Kafka, it is not yet supported by AVRO on BigQuery. Therefore, we perform necessary transformations to ensure that the data meets the type requirements for AVRO on BigQuery.  
+### **Transformations:**     
+Utilized ksqlDB to perform real-time data transformations, enrichments, and aggregations on the incoming data streams from Coinbase. Refer to `ksqldb/transform_changes.sql` for details.  
+One of the reasons for the transformation is that our data includes an attribute called "changes" that is a nested array. While nested arrays are supported by AVRO on Confluent Kafka, it is not yet supported by AVRO on BigQuery. Therefore, we perform necessary transformations to ensure that the data meets the type requirements for AVRO on BigQuery. 
  
 ### **Dashboard:**   
 [My Interactive Looker Dashboard](https://lookerstudio.google.com/reporting/3711d375-9496-4ce0-be5b-46e5345048c6) that visualizes simple analytical results after 10 hours of continuous streaming.   
