@@ -27,7 +27,7 @@ Partitioning data based on the `TIME` column at the hourly level can notably enh
   
 ### **Transformations:**     
 Utilized ksqlDB to perform real-time data transformations, enrichments, and aggregations on the incoming data streams from Coinbase. Refer to `ksqldb/transform_changes.sql` for details.  
-One of the reasons for the transformation is that our data includes an attribute called "changes" that is a nested array. While nested arrays are supported by AVRO on Confluent Kafka, it is not yet supported by AVRO on BigQuery. Therefore, we perform necessary transformations to ensure that the data meets the type requirements for AVRO on BigQuery. 
+One of the reasons for the transformation is that our data includes an attribute called "changes" that is a nested array. While nested arrays are supported by AVRO on Confluent Kafka, it is not yet supported by AVRO on BigQuery. Therefore, we perform necessary transformations to ensure that the data meets the type requirements for AVRO on BigQuery. Refer to this [LINK](https://cloud.google.com/bigquery/docs/loading-data-cloud-storage-avro#limitations_2).  
  
 ### **Dashboard:**   
 [My Interactive Looker Dashboard](https://lookerstudio.google.com/reporting/3711d375-9496-4ce0-be5b-46e5345048c6) that visualizes simple analytical results after 10 hours of continuous streaming.   
