@@ -52,21 +52,22 @@ Confluent Cloud Free Account
 
 ### **Step-by-step Setup**
 1. Git Clone this repo and navigate to project directory.  
-	`git clone https://github.com/josephj1o4e1/kafka-project-coinbase.git`
+	`git clone https://github.com/josephj1o4e1/kafka-project-coinbase.git`  
+	`cd kafka-project-coinbase`  
 
-2. Create the conda environment.  
+3. Create the conda environment.  
 	`conda env create -f environment.yml`  
 	`conda activate dezoom-project-reproduce`
 
-3. Create a BigQuery project.  
+4. Create a BigQuery project.  
 
-4. Get BigQuery api keys/credentials   
+5. Get BigQuery api keys/credentials   
 	- Create keys/ folder under terraform folder
  	- In GCP Cloud Console, create service account:  
 		- IAM&admin -> service accounts -> create new service account -> choose only BigQuery Admin Permission
 		- Click the 3dots -> manage keys -> create a new key(JSON) -> save to terraform/keys/ folder
 
-5. Create a Confluent Kafka Environment and Cluster.
+6. Create a Confluent Kafka Environment and Cluster.
 	- https://docs.confluent.io/cloud/current/get-started/index.html 
 
 7. **.env** file: Copy template.env to .env, and start filling in the variables. 
