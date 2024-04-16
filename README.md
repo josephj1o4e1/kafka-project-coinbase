@@ -113,23 +113,25 @@ Confluent Cloud Free Account
 10. Setup ksqlDB.  
 	- Create a ksqldb cluster. All default is fine.  
 	- Go to Streams tab -> Import topics as stream -> choose coinbase_avro.  
-	- Go to Editor tab -> run the two queries in the transform_changes.sql under the resources/ folder, one at a time.  
-	- Now you should already have two streams created: coinbase_avro_explode, coinbase_avro_flat. You should also have Two topics created that have the suffix coinbase_avro_explode and coinbase_avro_flat.  
+	- Go to Editor tab -> run the two queries in `resources/transform_changes.sql`, one at a time.  
+	- By this point, you should already have two streams created: `coinbase_avro_explode` and `coinbase_avro_flat`. Additionally, you should have two corresponding topics created, each with a name suffixed by `coinbase_avro_explode` and `coinbase_avro_flat`, respectively.  
 
 11. Add Confluent Google BigQuery Sink v2 Connector. 
-	- Choose topic to stream from: choose the topic that has "coinbase_avro_flat" as suffix.  
-	- Use an existing API key: Enter CLUSTER_API_KEY, CLUSTER_API_SECRET (to allow the connector to only have permissions to that Kafka cluster).  
-	- Connect with Google Cloud: Set OAuth 2.0 permission to connect to BigQuery.  
-	- Specify BigQuery project id and dataset id(dezoom_coinbase_stream_terraform) of your desired BigQuery table to stream to.  
-	- Config and set kafka record key/value format both AVRO.  
-	- In advanced config > Auto create tables, select Non-partitioned.  
+	- Choose topic to stream from:  
+		choose the topic that has `coinbase_avro_flat` as suffix.  
+	- Use an existing API key:  
+		Enter `CLUSTER_API_KEY`, `CLUSTER_API_SECRET` (to grant the connector permissions restricted to that Kafka cluster).  
+	- Connect with Google Cloud: Set OAuth 2.0 permissions to connect to BigQuery.  
+	- Specify the BigQuery project ID and dataset ID (`dezoom_coinbase_stream_terraform`) for your desired BigQuery table to stream to.  
+	- Configure and set the Kafka record key/value format to AVRO.  
+	- In advanced config -> Auto create tables, select Non-partitioned.  
 
 
 ## 2. Usage   
 After finishing all the setup steps above:    
 1. Simply run `python producer_coinbase.py`.  Streaming begins.  
 It should look something like this:  
-<img width="791" alt="terminal_view_streaming" src="https://github.com/josephj1o4e1/kafka-project-coinbase/assets/13396370/cdb76be8-fdd8-464c-8d63-750457eb43dd">
+<img width="791" alt="terminal_view_streaming" src="https://github.com/josephj1o4e1/kafka-project-coinbase/assets/13396370/cdb76be8-fdd8-464c-8d63-750457eb43dd">  
 Check if your data is sent to the BigQuery Table.  
 
 2. BigQuery table Partitioning and Clustering.  
