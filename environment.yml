@@ -1,4 +1,4 @@
-name: dezoom-project-reproduce2
+name: dezoom-project-reproduce
 channels:
   - conda-forge
   - defaults

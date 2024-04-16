@@ -54,6 +54,7 @@ Confluent Cloud Free Account
 
 2. Create the conda environment.  
 	`conda env create -f environment.yml`
+	`conda activate dezoom-project-reproduce`
 
 3. Create a BigQuery project.  
 
