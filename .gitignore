@@ -1,11 +1,12 @@
 /datasets
 *.txt
-.env
+*.env
+!template.env
 __pycache__
 *test*.py
 *.json
 /ignored
-
+/terraform_test
 
 
 # Terrafotm Gitignore: https://github.com/github/gitignore/blob/main/Terraform.gitignore 

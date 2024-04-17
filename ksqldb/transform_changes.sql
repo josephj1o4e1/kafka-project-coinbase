@@ -1,5 +1,12 @@
 -- On the WebUI of ksqldb -> Streams tab, import coinbase_avro topic as a stream
 -- Firstly, Explode nested array "changes" to multiple rows. 
+CREATE STREAM coinbase_avro
+WITH (
+    KAFKA_TOPIC = 'coinbase_avro',
+    VALUE_FORMAT = 'AVRO'
+)
+;
+
 CREATE STREAM coinbase_avro_explode AS
 SELECT
     type,
