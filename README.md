@@ -13,7 +13,12 @@ This is achieved by streaming data from Coinbase's ["Exchange Websocket Direct M
 This streaming data pipeline encompasses the following key aspects:  
 
 ### **Cloud:**  
-The project is developed using Confluent Cloud and BigQuery. Terraform serves as the Infrastructure as Code (IaC) tool for resource creation. However, it's worth noting that certain resources on Confluent are best created using the Confluent Cloud Console for enhanced security practices. Rest assured, I'll provide guidance wherever possible throughout the process.  
+<!-- ![project-clouds-logo](assets/images/dezoom-project-clouds.drawio.svg)   -->
+<div style="text-align: center;">
+<img src="assets/images/dezoom-project-clouds.drawio.svg" alt="Project Clouds Logo" width="300">  
+</div>
+
+The project is developed using Confluent Cloud and BigQuery. Terraform serves as the Infrastructure as Code (IaC) tool for resource creation.  
  
 ### **Data ingestion:**  
 Producer:    
@@ -51,81 +56,75 @@ BigQuery Free Account
 Confluent Cloud Free Account  
 
 ### **Step-by-step Setup**
-1. Git Clone this repo and navigate to project directory.  
+1. `git clone` this repo and navigate to project directory   
 	`git clone https://github.com/josephj1o4e1/kafka-project-coinbase.git`  
 	`cd kafka-project-coinbase`  
 
-3. Create the conda environment.  
+2. Create the conda environment  
 	`conda env create -f environment.yml`  
 	`conda activate dezoom-project-reproduce`
 
-4. Create a BigQuery project.  
+3. Create a BigQuery project   
+	Follow this [LINK](https://cloud.google.com/resource-manager/docs/creating-managing-projects#creating_a_project). 
 
-5. Get BigQuery api keys/credentials   
-	- Create keys/ folder under terraform folder
- 	- In GCP Cloud Console, create service account:  
-		- IAM&admin -> service accounts -> create new service account -> choose only BigQuery Admin Permission
-		- Click the 3dots -> manage keys -> create a new key(JSON) -> save to terraform/keys/ folder
+4. Add a BigQuery API Key   
+	- Under the project foler, create keys/ folder under terraform/ folder. (kafka-project-coinbase/terraform/keys)  
+ 	- In the GCP Cloud Console, create a service account:  
+		- Go to IAM&admin -> service accounts -> create new service account -> choose only BigQuery Admin Permission
+		- Click the 3-dots icon -> manage keys -> create a new key(JSON) -> save .json file to terraform/keys/ folder
 
-6. Create a Confluent Kafka Environment and Cluster.
-	- https://docs.confluent.io/cloud/current/get-started/index.html 
+5. Add a Confluent Cloud API Key  
+	- In the Confluent Cloud Console:  
 
-7. **.env** file: Copy template.env to .env, and start filling in the variables. 
+6. Prepare a **secret.tfvars** file   
+	Copy template_secret.tfvars to secret.tfvars and start filling in the variables.  
+	GCP:  
+	- `gcp_credentials`:  
+		File path of your (credential) .json file.    
+	- `gcp_project`:  
+		Project id of your GCP project.  
+	
+	Confluent Cloud:  
+	- `confluent_cloud_api_key`, `confluent_cloud_api_secret`:  
+		Your confluent cloud api key and api secret.     
+
+7. Run terraform (without BigQueryConnector)   
+	- Install Terraform if you haven't already (I use Linux AMD64)  
+		https://developer.hashicorp.com/terraform/install (use terraform --help command to confirm installation)  
+	- `cd terraform/`   
+	- `terraform init` (get providers)  
+	- `terraform plan -var-file="secret.tfvars"` (this make sure credentials work and let you inspect prepared resources)   
+	- `terraform apply -var-file="secret.tfvars"` (takes about 10 minutes)  
+
+8. Run queries in ksqlDB editor  
+	- Go to Editor tab -> run the three queries in `resources/transform_changes.sql`, one at a time.  
+	- After that, you should already have three ksql streams created: `coinbase_avro`, `coinbase_avro_explode` and `coinbase_avro_flat`. You should also have two corresponding topics created, each with a name suffixed by `COINBASE_AVRO_EXPLODE` and `COINBASE_AVRO_FLAT`, respectively.  
+
+9. Run terraform (with BigQueryConnector)  
+	- Uncomment the last part of `main.tf` which is the confluent_connector resource.  
+	- `terraform plan -var-file="secret.tfvars"`
+	- `terraform apply -var-file="secret.tfvars"` (takes about 5 minutes)  
+
+10. Prepare a **.env** file  
+	Copy template.env to .env and start filling in the variables.  
 	- `COINBASE_KEY_SCHEMA_PATH`='resources/schemas/coinbase_key.avsc'  
 	- `COINBASE_VALUE_SCHEMA_PATH`='resources/schemas/coinbase_value.avsc'  
 
 	Confluent Cloud Console:  
 	- `BOOTSTRAP_SERVERS`:  
-		Navigate to Environments/Environment/Cluster/Cluster Settings and you'll see it.  
-	- `CLUSTER_API_KEY`, `CLUSTER_API_SECRET`: 
-		Navigate to Environments/Environment/Cluster/API Keys and add API key.  
+		Navigate to *Environments/dezoom_project_env/dezoom_kafka_cluster0/Cluster Settings* and you'll see the bootstrap server url.  
+	- `CLUSTER_API_KEY`, `CLUSTER_API_SECRET`:  
+		Navigate to *Environments/dezoom_project_env/dezoom_kafka_cluster0/API Keys* and add another API key for your Python Client (which is `producer_coinbase.py`).  
 	- `KAFKA_TOPICS`="coinbase_avro"  
 	- `SCHEMA_REGISTRY_URL`(endpoint), `SCHEMA_REGISTRY_API_KEY`, `SCHEMA_REGISTRY_API_SECRET`:  
-		Navigate to Environments/<YOUR ENV>/Stream Governance API.  
+		Navigate to *Environments/dezoom_project_env/Stream Governance API* (at the lower right bar).  
+		**Copy the endpoint** and also **create another schema registry API key** for your Python Client (which is `producer_coinbase.py`).  
 		Follow this [LINK](https://docs.confluent.io/cloud/current/get-started/schema-registry.html#create-an-api-key-for-ccloud-sr) to learn more about creating schema registration key.   
 	
 	Coinbase Sandbox API:  
 	- `SANDBOX_API_KEY`, `SANDBOX_PASSPHRASE`, `SANDBOX_SECRET_KEY`:  
 		Sign up and Log into the [sandbox web interface](https://public.sandbox.exchange.coinbase.com/), and go to the "API" tab to create an API key.  
 
-8. **secret.tfvars** file: Copy template_secret.tfvars to secret.tfvars, and start filling in the variables.  
-	GCP:  
-	- `gcp_credentials`:  
-		path of your (credential) .json file    
-	- `gcp_project`:  
-		name of your gcp project (project id).  
-	
-	Confluent Cloud:  
-	- `confluent_cloud_api_key`, `confluent_cloud_api_secret`:  
-		Create a cloud api key on confluent cloud console (under the main tab on the upperright).   
-	- `confluent_kafka_id`, `confluent_kafka_rest_endpoint`:  
-		Go to cluster settings to get kafka cluster id and rest endpoint.  
-	- `confluent_kafka_api_key`, `confluent_kafka_api_secret`:  
-		Same as `CLUSTER_API_KEY`, `CLUSTER_API_SECRET` in .env  
-
-9. Run terraform (bigquery dataset, confluent topic, confluent schema registry).   
-	- Install Terraform if you haven't already (I use Linux AMD64)  
-		https://developer.hashicorp.com/terraform/install (use terraform --help command to confirm installation)  
-	- `cd terraform/`   
-	- `terraform init` (get providers)  
-	- `terraform plan -var-file="secret.tfvars"` (this make sure credentials work and let you inspect prepared resources)   
-	- `terraform apply -var-file="secret.tfvars"` 
-
-10. Setup ksqlDB.  
-	- Create a ksqldb cluster. All default is fine.  
-	- Go to Streams tab -> Import topics as stream -> choose coinbase_avro.  
-	- Go to Editor tab -> run the two queries in `resources/transform_changes.sql`, one at a time.  
-	- By this point, you should already have two streams created: `coinbase_avro_explode` and `coinbase_avro_flat`. Additionally, you should have two corresponding topics created, each with a name suffixed by `coinbase_avro_explode` and `coinbase_avro_flat`, respectively.  
-
-11. Add Confluent Google BigQuery Sink v2 Connector. 
-	- Choose topic to stream from:  
-		choose the topic that has `coinbase_avro_flat` as suffix.  
-	- Use an existing API key:  
-		Enter `CLUSTER_API_KEY`, `CLUSTER_API_SECRET` (to grant the connector permissions restricted to that Kafka cluster).  
-	- Connect with Google Cloud: Set OAuth 2.0 permissions to connect to BigQuery.  
-	- Specify the BigQuery project ID and dataset ID (`dezoom_coinbase_stream_terraform`) for your desired BigQuery table to stream to.  
-	- Configure and set the Kafka record key/value format to AVRO.  
-	- In advanced config -> Auto create tables, select Non-partitioned.  
 
 
 ## 2. Usage   
@@ -136,7 +135,7 @@ It should look something like this:
 Check if your data is sent to the BigQuery Table.  
 
 2. BigQuery table Partitioning and Clustering.  
-	Have a look at bigquery_partition.sql and run the sql query in your BigQuery project to partition and cluster the table.  
+	Have a look at `bigquery_partition.sql` and run the sql query in your BigQuery project to partition and cluster the table.  
 	Change `TABLE_NAME` and `TABLE_NAME_PARTITIONED_CLUSTERED` to your desired table name.  
 	Partitioned by time (hour), and clustered by product_id.  
 	After partitioning and clustering the original table, you can compare the performance improvement like this:  

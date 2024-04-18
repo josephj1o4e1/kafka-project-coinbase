@@ -1,10 +1,12 @@
+# Here are the Resources created: 
 # BigQuery Dataset
 # Confluent Environment
+# Confluent Schema Registry Cluster
 # Confluent Kafka Cluster
 # Confluent Kafka Topic
-# Confluent Schema Registry Cluster
+# Confluent Schema Registry (Key and Value)
 # Confluent ksqlDB
-# Confluent Kafka BigQuery Connector
+# Confluent Kafka BigQuery Sink Connector v2
 
 terraform {
   required_providers {
