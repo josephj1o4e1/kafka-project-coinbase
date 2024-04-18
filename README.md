@@ -132,11 +132,10 @@ Confluent Cloud Free Account
 After finishing all the setup steps above:    
 1. Simply run `python producer_coinbase.py`.  Streaming begins.  
 It should look something like this:  
-<img width="500" alt="terminal_view_streaming" src="https://github.com/josephj1o4e1/kafka-project-coinbase/assets/13396370/cdb76be8-fdd8-464c-8d63-750457eb43dd">
-
+<img width="500" alt="terminal_view_streaming" src="https://github.com/josephj1o4e1/kafka-project-coinbase/assets/13396370/cdb76be8-fdd8-464c-8d63-750457eb43dd">  
 Check if your data is sent to the BigQuery Table.  
 
-3. BigQuery table Partitioning and Clustering.  
+2. BigQuery table Partitioning and Clustering.  
 	Have a look at `bigquery_partition.sql` and run the sql query in your BigQuery project to partition and cluster the table.  
 	Change `TABLE_NAME` and `TABLE_NAME_PARTITIONED_CLUSTERED` to your desired table name.  
 	Partitioned by time (hour), and clustered by product_id.  
@@ -156,10 +155,10 @@ Check if your data is sent to the BigQuery Table.
 	;
 	```
 
-4. Looker Studio.  
+3. Looker Studio.  
 	Visualize the data on Looker studio.  
 	[Here's the link](https://lookerstudio.google.com/reporting/3711d375-9496-4ce0-be5b-46e5345048c6) of my simple analysis and visualization. 
 
-5. Destroy all resources
+4. Destroy all resources
 	`terraform destroy -var-file="secret.tfvars"`
 
