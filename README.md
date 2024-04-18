@@ -74,7 +74,8 @@ Confluent Cloud Free Account
 		- Click the 3-dots icon -> manage keys -> create a new key(JSON) -> save .json file to terraform/keys/ folder
 
 5. Add a Confluent Cloud API Key  
-	- In the Confluent Cloud Console:  
+	- In the Confluent Cloud Console:
+	<img width="500" alt="wheres-cloud-api-key" src="https://github.com/josephj1o4e1/kafka-project-coinbase/assets/13396370/fa89a2b1-6387-4361-966f-ebffb315a6d1">
 
 6. Prepare a **secret.tfvars** file   
 	Copy template_secret.tfvars to secret.tfvars and start filling in the variables.  
