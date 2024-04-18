@@ -14,9 +14,9 @@ This streaming data pipeline encompasses the following key aspects:
 
 ### **Cloud:**  
 <!-- ![project-clouds-logo](assets/images/dezoom-project-clouds.drawio.svg)   -->
-<div style="text-align: center;">
+<p align="center">
 <img src="assets/images/dezoom-project-clouds.drawio.svg" alt="Project Clouds Logo" width="300">  
-</div>
+</p>
 
 The project is developed using Confluent Cloud and BigQuery. Terraform serves as the Infrastructure as Code (IaC) tool for resource creation.  
  
