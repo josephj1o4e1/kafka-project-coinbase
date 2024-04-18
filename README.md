@@ -96,7 +96,7 @@ Confluent Cloud Free Account
 	- `cd terraform/`   
 	- `terraform init` (get providers)  
 	- `terraform plan -var-file="secret.tfvars"` (this make sure credentials work and let you inspect prepared resources)   
-	- `terraform apply -var-file="secret.tfvars"` (takes about 10 minutes)  
+	- `terraform apply -var-file="secret.tfvars"` (takes a couple of minutes)  
 
 8. Run queries in ksqlDB editor  
 	- In your current cluster, go to ksqlDB Editor tab -> run the three queries in `resources/transform_changes.sql`, one at a time.  
@@ -105,25 +105,10 @@ Confluent Cloud Free Account
 9. Run terraform (with BigQueryConnector)  
 	- Uncomment the last part of `main.tf` which is the confluent_connector resource.  
 	- `terraform plan -var-file="secret.tfvars"`
-	- `terraform apply -var-file="secret.tfvars"` (takes about 5 minutes)  
+	- `terraform apply -var-file="secret.tfvars"` (takes a couple of minutes)  
 
 10. Prepare a **.env** file  
 	Copy template.env to .env and start filling in the variables.  
-	This is for running python producer client.  
-	- `COINBASE_KEY_SCHEMA_PATH`='resources/schemas/coinbase_key.avsc'  
-	- `COINBASE_VALUE_SCHEMA_PATH`='resources/schemas/coinbase_value.avsc'  
-
-	Confluent Cloud Console:  
-	- `BOOTSTRAP_SERVERS`:  
-		Navigate to *Environments/dezoom_project_env/dezoom_kafka_cluster0/Cluster Settings* and you'll see the bootstrap server url.  
-	- `CLUSTER_API_KEY`, `CLUSTER_API_SECRET`:  
-		Navigate to *Environments/dezoom_project_env/dezoom_kafka_cluster0/API Keys* and add another API key for your Python Client (which is `producer_coinbase.py`).  
-	- `KAFKA_TOPICS`="coinbase_avro"  
-	- `SCHEMA_REGISTRY_URL`(endpoint), `SCHEMA_REGISTRY_API_KEY`, `SCHEMA_REGISTRY_API_SECRET`:  
-		Navigate to *Environments/dezoom_project_env/Stream Governance API* (at the lower right bar).  
-		**Copy the endpoint** and also **create another schema registry API key** for your Python Client (which is `producer_coinbase.py`).  
-		Follow this [LINK](https://docs.confluent.io/cloud/current/get-started/schema-registry.html#create-an-api-key-for-ccloud-sr) to learn more about creating schema registration key.   
-	
 	Coinbase Sandbox API:  
 	- `SANDBOX_API_KEY`, `SANDBOX_PASSPHRASE`, `SANDBOX_SECRET_KEY`:  
 		Sign up and Log into the [sandbox web interface](https://public.sandbox.exchange.coinbase.com/), and go to the "API" tab to create an API key.  
