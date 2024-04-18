@@ -4,13 +4,13 @@
 
 ## **Introduction**  
 This final project repo includes real-time Coinbase market streaming pipeline.   
-The above graph is a brief summary of my streaming pipeline. My Kafka producer, written in Python, ingests data from Coinbase and publishes it to a Confluent Kafka Topic. Prior to consumption, I use ksqlDB for essential stream processing and transformation. For consuming the data, I utilize a managed Confluent connector as my Kafka consumer, which retrieves messages from ksqlDB and transfers them to a BigQuery Table.     
+The above graph is a brief summary of my streaming pipeline. My Kafka producer, written in Python, ingests data from Coinbase and publishes it to a Confluent Kafka Topic. Prior to consumption, I use ksqlDB for essential stream processing and transformation. For consuming the data, I utilize a managed Confluent connector as my Kafka consumer, which retrieves messages from ksqlDB and transfers them to a BigQuery Table.  I built a simple dashboard on Looker Studio from the data from BigQuery Table.      
 
 ### Problem description:  
 This repository fulfills the requirement for real-time monitoring of Coinbase market data updates, specifically focusing on orders and trades. Through the implementation of a streaming data pipeline, it empowers traders with up-to-date information on trading volume and values across various virtual currencies on Coinbase.  
-This is achieved by streaming data from Coinbase's ["Exchange Websocket Direct Market Data"](https://docs.cloud.coinbase.com/exchange/docs/websocket-overview), feeding it into Confluent Kafka for processing, storing the processed data on BigQuery, and ultimately leveraging Looker Studio to construct visualizations for insights into trading trends.  
+This project is achieved by streaming data from Coinbase's ["Exchange Websocket Direct Market Data"](https://docs.cloud.coinbase.com/exchange/docs/websocket-overview).    
 
-This streaming data pipeline encompasses the following key aspects:  
+The streaming data pipeline encompasses the following key aspects:  
 
 ### Cloud:  
 <!-- ![project-clouds-logo](assets/images/dezoom-project-clouds.drawio.svg)   -->
@@ -44,6 +44,7 @@ One of the reasons for the transformation is that our data includes an attribute
  
 ## **Reproduce the Pipeline**  
 Please follow the below steps to reproduce the pipeline.  
+From the beginning to the end of the project, all required services are free!  
 1. [Setup](#1-setup)
 2. [Usage](#2-usage)
 
@@ -52,8 +53,8 @@ Please follow the below steps to reproduce the pipeline.
 OS: WSL (Linux AMD64)  
 Package Manager: Conda  
 Git  
-BigQuery Free Account  
-Confluent Cloud Free Account  
+[BigQuery Free Account](https://console.cloud.google.com/)   
+[Confluent Cloud Free Account](https://confluent.cloud/)  
 
 ### Step-by-step Setup:  
 1. `git clone` this repo and navigate to project directory   
@@ -68,10 +69,10 @@ Confluent Cloud Free Account
 	Follow this [LINK](https://cloud.google.com/resource-manager/docs/creating-managing-projects#creating_a_project). 
 
 4. Add a BigQuery API Key   
-	- Under the project foler, create keys/ folder under terraform/ folder. (kafka-project-coinbase/terraform/keys)  
- 	- In the GCP Cloud Console, create a service account:  
-		- Go to IAM&admin -> service accounts -> create new service account -> choose only BigQuery Admin Permission
-		- Click the 3-dots icon -> manage keys -> create a new key(JSON) -> save .json file to terraform/keys/ folder
+	Under the project folder, create keys/ folder under terraform/ folder. (kafka-project-coinbase/terraform/keys)  
+ 	In the GCP Cloud Console, create a service account:  
+	- Go to IAM&admin -> service accounts -> create new service account -> choose only BigQuery Admin Permission
+	- Click the 3-dots icon -> manage keys -> create a new key(JSON) -> save .json file to terraform/keys/ folder  
 
 5. Add a Confluent Cloud API Key  
 	- In the Confluent Cloud Console:  
