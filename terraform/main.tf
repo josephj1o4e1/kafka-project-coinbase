@@ -154,6 +154,86 @@ resource "confluent_kafka_topic" "coinbase_avro" {
   }
 }
 
+resource "confluent_service_account" "dezoom_env_manager" {
+  display_name = "dezoom_env_manager"
+  description  = "Service account to manage 'dezoom_project_env' environment"
+}
+
+resource "confluent_role_binding" "dezoom_env_manager_environment_admin" {
+  principal   = "User:${confluent_service_account.dezoom_env_manager.id}"
+  role_name   = "EnvironmentAdmin"
+  crn_pattern = confluent_environment.dezoom_project_env.resource_name
+}
+
+resource "confluent_api_key" "dezoom_env_manager_schema_registry_api_key" {
+  display_name = "dezoom_env_manager_schema_registry_api_key"
+  description  = "Schema Registry API Key that is owned by 'dezoom_env_manager' service account"
+  owner {
+    id          = confluent_service_account.dezoom_env_manager.id
+    api_version = confluent_service_account.dezoom_env_manager.api_version
+    kind        = confluent_service_account.dezoom_env_manager.kind
+  }
+
+  managed_resource {
+    id          = confluent_schema_registry_cluster.essentials.id
+    api_version = confluent_schema_registry_cluster.essentials.api_version
+    kind        = confluent_schema_registry_cluster.essentials.kind
+
+    environment {
+      id = confluent_environment.dezoom_project_env.id
+    }
+  }
+
+  # The goal is to ensure that confluent_role_binding.env-manager-environment-admin is created before
+  # confluent_api_key.env-manager-schema-registry-api-key is used to create instances of
+  # confluent_schema resources.
+
+  # 'depends_on' meta-argument is specified in confluent_api_key.env-manager-schema-registry-api-key to avoid having
+  # multiple copies of this definition in the configuration which would happen if we specify it in
+  # confluent_schema resources instead.
+  depends_on = [
+    confluent_role_binding.dezoom_env_manager_environment_admin
+  ]
+}
+
+# Create Schema in Confluent Schema Registry (value)
+resource "confluent_schema" "coinbase_avro_value_schema" {
+  schema_registry_cluster {
+    id = confluent_schema_registry_cluster.essentials.id
+  }
+  rest_endpoint = confluent_schema_registry_cluster.essentials.rest_endpoint
+  subject_name  = "${confluent_kafka_topic.coinbase_avro.topic_name}-value" # Automatically sets schema on topic simply by naming conventions. 
+  format        = "AVRO"
+  schema        = file("../resources/schemas/coinbase_value.avsc")
+  credentials {
+    key    = confluent_api_key.dezoom_env_manager_schema_registry_api_key.id
+    secret = confluent_api_key.dezoom_env_manager_schema_registry_api_key.secret
+  }
+
+  # lifecycle {
+  #   prevent_destroy = true
+  # }
+}
+
+# Create Schema in Confluent Schema Registry (key)
+resource "confluent_schema" "coinbase_avro_key_schema" {
+  schema_registry_cluster {
+    id = confluent_schema_registry_cluster.essentials.id
+  }
+  rest_endpoint = confluent_schema_registry_cluster.essentials.rest_endpoint
+  subject_name  = "${confluent_kafka_topic.coinbase_avro.topic_name}-key"
+  format        = "AVRO"
+  schema        = file("../resources/schemas/coinbase_key.avsc")
+  credentials {
+    key    = confluent_api_key.dezoom_env_manager_schema_registry_api_key.id
+    secret = confluent_api_key.dezoom_env_manager_schema_registry_api_key.secret
+  }
+
+  # lifecycle {
+  #   prevent_destroy = true
+  # }
+}
+
 
 # Confluent ksqlDB
 # Binds the service account to a ResourceOwner role for Schema Registry Cluster: ksqlDB have restricted resource-level operations. 
@@ -190,37 +270,61 @@ resource "confluent_ksql_cluster" "dezoom_transform_changes" {
   # }
 }
 
-
-
-# Confluent Kafka BigQuery Connector
-# connector.class=BigQueryStorageSink??
-resource "confluent_connector" "bigquery-sink" {
-  environment {
-    id = confluent_environment.dezoom_project_env.id
-  }
+# Topic specific permissions. You have to add an ACL like this for every Kafka topic you work with.
+resource "confluent_kafka_acl" "dezoom_cluster_manager_all_on_topic" {
   kafka_cluster {
     id = confluent_kafka_cluster.dezoom_kafka_cluster0.id
   }
-
-  // Block for custom *sensitive* configuration properties that are labelled with "Type: password" under "Configuration Properties" section in the docs:
-  // https://docs.confluent.io/cloud/current/connectors/cc-s3-sink.html#configuration-properties
-  config_sensitive = {
-    "keyfile" = file(var.gcp_credentials)
-  }
-
-  // Block for custom *nonsensitive* configuration properties that are *not* labelled with "Type: password" under "Configuration Properties" section in the docs:
-  // https://docs.confluent.io/cloud/current/connectors/cc-s3-sink.html#configuration-properties
-  config_nonsensitive = {
-    "topics"                   = confluent_kafka_topic.coinbase_avro.topic_name
-    "data.format"              = "AVRO"
-    "connector.class"          = "BigQueryStorageSink"
-    "name"                     = "BigQueryStorageSink_dezoom_project"
-    "kafka.auth.mode"          = "SERVICE_ACCOUNT"
-    "kafka.service.account.id" = confluent_service_account.dezoom_cluster_manager.id
-    "project"                  = var.gcp_project
-    "datasets"                 = var.gcp_dataset
-    "tasks.max"                = "1"
-    "auto.create.tables"       = "true"
+  resource_type = "TOPIC"
+  resource_name = confluent_kafka_topic.coinbase_avro.topic_name
+  pattern_type  = "PREFIXED"
+  principal     = "User:${confluent_service_account.dezoom_cluster_manager.id}"
+  host          = "*"
+  operation     = "ALL"
+  permission    = "ALLOW"
+  rest_endpoint = confluent_kafka_cluster.dezoom_kafka_cluster0.rest_endpoint
+  credentials {
+    key    = confluent_api_key.dezoom_cluster_manager_kafka_api_key.id
+    secret = confluent_api_key.dezoom_cluster_manager_kafka_api_key.secret
   }
 }
+
+
+# # Only uncomment this part AFTER CREATING KSQL STREAMS USING QUERIES FROM transform_changes.sql
+
+# # Confluent Kafka BigQuery Connector
+# resource "confluent_connector" "bigquery-sink" {
+#   environment {
+#     id = confluent_environment.dezoom_project_env.id
+#   }
+#   kafka_cluster {
+#     id = confluent_kafka_cluster.dezoom_kafka_cluster0.id
+#   }
+
+#   // Block for custom *sensitive* configuration properties that are labelled with "Type: password" under "Configuration Properties" section in the docs:
+#   // https://docs.confluent.io/cloud/current/connectors/cc-s3-sink.html#configuration-properties
+#   config_sensitive = {
+#     "keyfile" = file(var.gcp_credentials)
+#   }
+
+#   // Block for custom *nonsensitive* configuration properties that are *not* labelled with "Type: password" under "Configuration Properties" section in the docs:
+#   // https://docs.confluent.io/cloud/current/connectors/cc-s3-sink.html#configuration-properties
+#   config_nonsensitive = {
+#     "topics"                   = format("%s%s", confluent_ksql_cluster.dezoom_transform_changes.topic_prefix, var.confluent_ksql_output_topic) // var.confluent_ksql_output_topic
+#     "data.format"              = "AVRO"
+#     "connector.class"          = "BigQueryStorageSink"
+#     "name"                     = "BigQueryStorageSink_dezoom_project"
+#     "kafka.auth.mode"          = "SERVICE_ACCOUNT"
+#     "kafka.service.account.id" = confluent_service_account.dezoom_cluster_manager.id
+#     "project"                  = var.gcp_project
+#     "datasets"                 = var.gcp_dataset
+#     "tasks.max"                = "1"
+#     "auto.create.tables"       = "true"
+#   }
+# }
+
+
+
+
+
 

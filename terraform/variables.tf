@@ -45,4 +45,7 @@ variable "confluent_cloud_api_secret" {
 
 # Confluent Resource Variables
 
-
+variable "confluent_ksql_output_topic" {
+  description = "My Confluent Cloud KSQL Output Topic Name"
+  default     = "COINBASE_AVRO_FLAT"
+}
