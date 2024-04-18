@@ -2,17 +2,17 @@
 
 ![project-techstack-logo](assets/images/dezoom-project-techstack.drawio.svg)
 
-## Introduction  
+## **Introduction**  
 This final project repo includes real-time Coinbase market streaming pipeline.   
 The above graph is a brief summary of my streaming pipeline. My Kafka producer, written in Python, ingests data from Coinbase and publishes it to a Confluent Kafka Topic. Prior to consumption, I use ksqlDB for essential stream processing and transformation. For consuming the data, I utilize a managed Confluent connector as my Kafka consumer, which retrieves messages from ksqlDB and transfers them to a BigQuery Table.     
 
-### **Problem description:**  
+### Problem description:  
 This repository fulfills the requirement for real-time monitoring of Coinbase market data updates, specifically focusing on orders and trades. Through the implementation of a streaming data pipeline, it empowers traders with up-to-date information on trading volume and values across various virtual currencies on Coinbase.  
 This is achieved by streaming data from Coinbase's ["Exchange Websocket Direct Market Data"](https://docs.cloud.coinbase.com/exchange/docs/websocket-overview), feeding it into Confluent Kafka for processing, storing the processed data on BigQuery, and ultimately leveraging Looker Studio to construct visualizations for insights into trading trends.  
 
 This streaming data pipeline encompasses the following key aspects:  
 
-### **Cloud:**  
+### Cloud:  
 <!-- ![project-clouds-logo](assets/images/dezoom-project-clouds.drawio.svg)   -->
 <p align="center">
 <img src="assets/images/dezoom-project-clouds.drawio.svg" alt="Project Clouds Logo" width="300">  
@@ -20,21 +20,21 @@ This streaming data pipeline encompasses the following key aspects:
 
 The project is developed using Confluent Cloud and BigQuery. Terraform serves as the Infrastructure as Code (IaC) tool for resource creation.  
  
-### **Data ingestion:**  
+### Data ingestion:  
 Producer:    
 Utilizing Kafka as the streaming tool, this repository employs the `producer_coinbase.py` script to ingest real-time market data from the Coinbase WebSocket feed. Acting as a local producer, this script retrieves data from the WebSocket, processes it, and publishes messages to Confluent Cloud Topics. In essence, it serves as a vital link between the Coinbase feed and Confluent Cloud, facilitating seamless data flow.  
 Consumer:   
 The consumer script is not essential in this setup because I utilize Confluent's BigQuery Sink Connector v2 to consume the data and send it directly to BigQuery. Visit this [LINK](https://www.confluent.io/resources/demo/bigquery-cloud-data-warehouse-streaming-pipelines/?utm_term=&creative=&device=c&placement=&gad_source=1).  
  
-### **Data warehouse:**    
+### Data warehouse:    
 Data has been streamed to BigQuery tables, where they are partitioned and clustered to optimize upstream queries. Refer to `bigquery_partition.sql` for details.   
 Partitioning data based on the `TIME` column at the hourly level can notably enhance query performance for time-based queries. Additionally, clustering by `PRODUCT_ID` ensures that data within each partition is logically sorted based on the product ID column, aligning well with GROUP BY clauses.     
   
-### **Transformations:**     
+### Transformations:     
 Utilized ksqlDB to perform real-time data transformations, enrichments, and aggregations on the incoming data streams from Coinbase. Refer to `ksqldb/transform_changes.sql` for details.  
 One of the reasons for the transformation is that our data includes an attribute called "changes" that is a nested array. While nested arrays are supported by AVRO on Confluent Kafka, it is not yet supported by AVRO on BigQuery. Therefore, we perform necessary transformations to ensure that the data meets the type requirements for AVRO on BigQuery. Refer to this [LINK](https://cloud.google.com/bigquery/docs/loading-data-cloud-storage-avro#limitations_2).  
  
-### **Dashboard:**   
+### Dashboard:   
 [My Interactive Looker Dashboard](https://lookerstudio.google.com/reporting/3711d375-9496-4ce0-be5b-46e5345048c6) that visualizes simple analytical results after 10 hours of continuous streaming.   
 <img width="635" height="354" alt="image" src="https://github.com/josephj1o4e1/kafka-project-coinbase/assets/13396370/f4bc361d-9837-4c86-b810-7285fb1c44fe">
 <img width="354" height="354" alt="image" src="https://github.com/josephj1o4e1/kafka-project-coinbase/assets/13396370/454c4a59-851a-4560-bcaa-8420dbefaa88">
@@ -47,15 +47,15 @@ Please follow the below steps to reproduce the pipeline.
 1. [Setup](#1-setup)
 2. [Usage](#2-usage)
 
-## 1. Setup   
-### **Environment/Prequisites:**  
+### **1. Setup**   
+### Environment/Prequisites:  
 OS: WSL (Linux AMD64)  
 Package Manager: Conda  
 Git  
 BigQuery Free Account  
 Confluent Cloud Free Account  
 
-### **Step-by-step Setup**
+### Step-by-step Setup:  
 1. `git clone` this repo and navigate to project directory   
 	`git clone https://github.com/josephj1o4e1/kafka-project-coinbase.git`  
 	`cd kafka-project-coinbase`  
@@ -128,7 +128,7 @@ Confluent Cloud Free Account
 
 
 
-## 2. Usage   
+### **2. Usage**   
 After finishing all the setup steps above:    
 1. Simply run `python producer_coinbase.py`.  Streaming begins.  
 It should look something like this:  
