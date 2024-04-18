@@ -97,7 +97,7 @@ Confluent Cloud Free Account
 	- `terraform apply -var-file="secret.tfvars"` (takes about 10 minutes)  
 
 8. Run queries in ksqlDB editor  
-	- Go to Editor tab -> run the three queries in `resources/transform_changes.sql`, one at a time.  
+	- In your current cluster, go to ksqlDB Editor tab -> run the three queries in `resources/transform_changes.sql`, one at a time.  
 	- After that, you should already have three ksql streams created: `coinbase_avro`, `coinbase_avro_explode` and `coinbase_avro_flat`. You should also have two corresponding topics created, each with a name suffixed by `COINBASE_AVRO_EXPLODE` and `COINBASE_AVRO_FLAT`, respectively.  
 
 9. Run terraform (with BigQueryConnector)  
@@ -158,5 +158,6 @@ Check if your data is sent to the BigQuery Table.
 	Visualize the data on Looker studio.  
 	[Here's the link](https://lookerstudio.google.com/reporting/3711d375-9496-4ce0-be5b-46e5345048c6) of my simple analysis and visualization. 
 
-
+4. Destroy all resources
+	`terraform destroy -var-file="secret.tfvars"`
 
