@@ -79,6 +79,7 @@ Confluent Cloud Free Account
 
 6. Prepare a **secret.tfvars** file   
 	Copy template_secret.tfvars to secret.tfvars and start filling in the variables.  
+	This is for running terraform.  
 	GCP:  
 	- `gcp_credentials`:  
 		File path of your (credential) .json file.    
@@ -108,6 +109,7 @@ Confluent Cloud Free Account
 
 10. Prepare a **.env** file  
 	Copy template.env to .env and start filling in the variables.  
+	This is for running python producer client.  
 	- `COINBASE_KEY_SCHEMA_PATH`='resources/schemas/coinbase_key.avsc'  
 	- `COINBASE_VALUE_SCHEMA_PATH`='resources/schemas/coinbase_value.avsc'  
 
