@@ -50,8 +50,8 @@ From the beginning to the end of the project, all required services are free!
 
 ### **1. Setup**   
 ### Environment/Prequisites:  
-OS: WSL (Linux AMD64)  
-Package Manager: Conda  
+OS: [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) (Linux AMD64) on Windows 10  
+Package Manager: [Miniconda](https://docs.anaconda.com/free/miniconda/miniconda-install/)  
 Git  
 [BigQuery Free Account](https://console.cloud.google.com/)   
 [Confluent Cloud Free Account](https://confluent.cloud/)  
@@ -100,7 +100,7 @@ Git
 	- `terraform apply -var-file="secret.tfvars"` (takes a couple of minutes)  
 
 8. Run queries in ksqlDB editor  
-	- In your current cluster, go to ksqlDB Editor tab -> run the three queries in your project `ksqldb/transform_changes.sql`, one at a time.  
+	- Go to Confluent Cloud Console. In your current cluster, go to ksqlDB Editor tab -> run the three queries in `ksqldb/transform_changes.sql`, one at a time.  
 	- After that, you should already have three ksql streams created: `coinbase_avro`, `coinbase_avro_explode` and `coinbase_avro_flat`. You should also have two corresponding topics created, each with a name suffixed by `COINBASE_AVRO_EXPLODE` and `COINBASE_AVRO_FLAT`, respectively.  
 
 9. Run terraform (with BigQueryConnector)  
@@ -151,3 +151,4 @@ After finishing all the setup steps above:
 4. Destroy all resources
 	`terraform destroy -var-file="secret.tfvars"`
 
+Feel free to provide comments, issues, or contributions to the project. Your feedback and involvement are highly valued and appreciated.  
